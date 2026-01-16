@@ -89,11 +89,18 @@ class InitScriptData {
         Iris.proxyImports.set("objects.TypedAlphabet", objects.TypedAlphabet);
 
         //options
+        Iris.proxyImports.set("options.BaseOptionsMenu", options.base.BaseOptionsMenu);
         Iris.proxyImports.set("options.ControlsSubState", options.base.ControlsSubState);
         Iris.proxyImports.set("options.ModSettingsSubState", options.base.ModSettingsSubState);
         Iris.proxyImports.set("options.NoteOffsetState", options.base.NoteOffsetState);
         Iris.proxyImports.set("options.NotesSubState", options.base.NotesSubState);
+        Iris.proxyImports.set("options.Option", options.base.OptionBase);
         Iris.proxyImports.set("options.OptionsMenu", options.base.BaseOptionsMenu);
+        Iris.proxyImports.set("options.OptionsState", options.OptionsState);
+        //0.7.3特有，当前项目不存在或已迁移
+        //Iris.proxyImports.set("options.GameplaySettingsSubState", null);
+        //Iris.proxyImports.set("options.GraphicsSettingsSubState", null);
+        //Iris.proxyImports.set("options.VisualsUISubState", null);
 
         //shaders
         Iris.proxyImports.set("shaders.BlendModeEffect", shaders.BlendModeEffect);
