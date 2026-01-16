@@ -35,7 +35,7 @@ class InitScriptData {
         Iris.proxyImports.set("hxcodec.flixel.FlxVideo", FlxVideo);
 
 
-        //-------------------- PSYCH v0.7.3 --------------------\\
+        //-------------------- PSYCH v0.7.3? --------------------\\
         //backend
         Iris.proxyImports.set("backend.animation.PsychAnimationController", backend.animation.PsychAnimationController);  //animation
         Iris.proxyImports.set("backend.Achievements", backend.Achievements);
@@ -44,7 +44,7 @@ class InitScriptData {
         Iris.proxyImports.set("backend.Conductor", backend.Conductor);
         Iris.proxyImports.set("backend.Controls", backend.Controls);
         Iris.proxyImports.set("backend.CoolUtil", backend.CoolUtil);
-        Iris.proxyImports.set("backend.CustomFadeTransition", backend.CoolUtil);
+        Iris.proxyImports.set("backend.CustomFadeTransition", backend.CustomFadeTransition);
         Iris.proxyImports.set("backend.Difficulty", backend.Difficulty);
         //Iris.proxyImports.set("Discord", backend.Discord);    //Psych 073有这个，但编译出错)
         Iris.proxyImports.set("backend.Highscore", backend.Highscore);
@@ -158,7 +158,113 @@ class InitScriptData {
         Iris.proxyImports.set("substates.Prompt", substates.Prompt);
         Iris.proxyImports.set("substates.ResetScoreSubState", substates.ResetScoreSubState);
 
-        //-------------------- PSYCH v0.6.3 --------------------\\
-        
+        //-------------------- PSYCH v0.6.3? --------------------\\
+        //backend
+        Iris.proxyImports.set("Achievements", backend.Achievements);
+        Iris.proxyImports.set("ClientPrefs", backend.ClientPrefs);
+        Iris.proxyImports.set("Conductor", backend.Conductor);
+        Iris.proxyImports.set("Controls", backend.Controls);
+        Iris.proxyImports.set("CoolUtil", backend.CoolUtil);
+        Iris.proxyImports.set("CustomFadeTransition", backend.CustomFadeTransition);
+        Iris.proxyImports.set("Highscore", backend.Highscore);
+        Iris.proxyImports.set("InputFormatter", backend.InputFormatter);
+        Iris.proxyImports.set("MusicBeatState", backend.MusicBeatState);
+        Iris.proxyImports.set("MusicBeatSubstate", backend.MusicBeatSubstate);
+        Iris.proxyImports.set("Paths", backend.Paths);
+        Iris.proxyImports.set("PlayerSettings", backend.ClientPrefs);  // PlayerSettings可能合并到ClientPrefs
+        Iris.proxyImports.set("Section", backend.Section);
+        Iris.proxyImports.set("Song", backend.Song);
+        Iris.proxyImports.set("StageData", backend.StageData);
+        Iris.proxyImports.set("WeekData", backend.WeekData);
+
+        //cutscenes
+        Iris.proxyImports.set("CutsceneHandler", cutscenes.CutsceneHandler);
+        Iris.proxyImports.set("DialogueBox", cutscenes.DialogueBox);
+        Iris.proxyImports.set("DialogueBoxPsych", cutscenes.DialogueBoxPsych);
+
+        //objects
+        Iris.proxyImports.set("Alphabet", objects.Alphabet);
+        Iris.proxyImports.set("AttachedSprite", objects.AttachedSprite);
+        Iris.proxyImports.set("AttachedText", objects.AttachedText);
+        Iris.proxyImports.set("BGSprite", objects.BGSprite);
+        Iris.proxyImports.set("BackgroundDancer", states.stages.objects.BackgroundDancer);
+        Iris.proxyImports.set("BackgroundGirls", states.stages.objects.BackgroundGirls);
+        Iris.proxyImports.set("Boyfriend", objects.Character);  // Boyfriend在0.6.3独立，现在合并到Character
+        Iris.proxyImports.set("Character", objects.Character);
+        Iris.proxyImports.set("CheckboxThingie", objects.CheckboxThingie);
+        Iris.proxyImports.set("HealthIcon", objects.HealthIcon);
+        Iris.proxyImports.set("MenuCharacter", objects.MenuCharacter);
+        Iris.proxyImports.set("MenuItem", objects.MenuItem);
+        Iris.proxyImports.set("Note", objects.Note);
+        Iris.proxyImports.set("NoteSplash", objects.NoteSplash);
+        Iris.proxyImports.set("StrumNote", objects.StrumNote);
+        Iris.proxyImports.set("TankmenBG", states.stages.objects.TankmenBG);
+        Iris.proxyImports.set("TypedAlphabet", objects.TypedAlphabet);
+
+        //options
+        Iris.proxyImports.set("BaseOptionsMenu", options.base.BaseOptionsMenu);
+        Iris.proxyImports.set("ControlsSubState", options.base.ControlsSubState);
+        //Iris.proxyImports.set("GameplaySettingsSubState", substates.GameplayChangersSubstate);  // 0.6.3特有
+        //Iris.proxyImports.set("GraphicsSettingsSubState", options.groupData.GraphicsGroup);  // 0.6.3特有
+        Iris.proxyImports.set("LatencyState", options.base.NoteOffsetState);  // LatencyState可能合并到NoteOffsetState
+        Iris.proxyImports.set("NoteOffsetState", options.base.NoteOffsetState);
+        Iris.proxyImports.set("NotesSubState", options.base.NotesSubState);
+        Iris.proxyImports.set("Option", options.base.OptionBase);
+        Iris.proxyImports.set("OptionsState", options.OptionsState);
+        //Iris.proxyImports.set("VisualsUISubState", options.OptionsState);  // 0.6.3特有，当前项目不存在
+
+        //shaders
+        Iris.proxyImports.set("BlendModeEffect", shaders.BlendModeEffect);
+        Iris.proxyImports.set("ColorSwap", shaders.ColorSwap);
+        Iris.proxyImports.set("OverlayShader", shaders.OverlayShader);
+        Iris.proxyImports.set("PhillyGlow", shaders.BlendModeEffect);  // PhillyGlow可能合并到Philly
+        Iris.proxyImports.set("WiggleEffect", shaders.WiggleEffect);
+
+        //states
+        Iris.proxyImports.set("AchievementsMenuState", states.AchievementsMenuState);
+        Iris.proxyImports.set("CreditsState", states.CreditsState);
+        Iris.proxyImports.set("FlashingState", states.FlashingState);
+        Iris.proxyImports.set("FreeplayState", states.FreeplayState);
+        Iris.proxyImports.set("LoadingState", states.LoadingState);
+        Iris.proxyImports.set("MainMenuState", states.MainMenuState);
+        Iris.proxyImports.set("ModsMenuState", states.ModsMenuState);
+        Iris.proxyImports.set("OutdatedState", states.OutdatedState);
+        Iris.proxyImports.set("PlayState", states.PlayState);
+        Iris.proxyImports.set("StoryMenuState", states.StoryMenuState);
+        Iris.proxyImports.set("TitleState", states.TitleState);
+
+        //states.editors
+        Iris.proxyImports.set("editors.CharacterEditorState", states.editors.CharacterEditorState);
+        Iris.proxyImports.set("editors.ChartingState", states.editors.ChartingState);
+        Iris.proxyImports.set("editors.DialogueCharacterEditorState", states.editors.DialogueCharacterEditorState);
+        Iris.proxyImports.set("editors.DialogueEditorState", states.editors.DialogueEditorState);
+        Iris.proxyImports.set("editors.EditorLua", scripts.lua.FunkinLua);  // EditorLua合并到FunkinLua
+        Iris.proxyImports.set("editors.EditorPlayState", states.editors.EditorPlayState);
+        Iris.proxyImports.set("editors.MasterEditorMenu", states.editors.MasterEditorMenu);
+        Iris.proxyImports.set("editors.MenuCharacterEditorState", states.editors.MenuCharacterEditorState);
+        Iris.proxyImports.set("editors.WeekEditorState", states.editors.WeekEditorState);
+
+        //substates
+        Iris.proxyImports.set("GameOverSubstate", substates.GameOverSubstate);
+        Iris.proxyImports.set("GameplayChangersSubstate", substates.GameplayChangersSubstate);
+        Iris.proxyImports.set("GitarooPause", substates.PauseSubState);  // GitarooPause用PauseSubState代替
+        Iris.proxyImports.set("PauseSubState", substates.PauseSubState);
+        Iris.proxyImports.set("Prompt", substates.Prompt);
+        Iris.proxyImports.set("ResetScoreSubState", substates.ResetScoreSubState);
+
+        //animateatlas (0.6.3特有，当前项目无)
+        //Iris.proxyImports.set("animateatlas.AtlasFrameMaker", animateatlas.AtlasFrameMaker);
+        //Iris.proxyImports.set("animateatlas.HelperEnums", animateatlas.HelperEnums);
+        //Iris.proxyImports.set("animateatlas.JSONData", animateatlas.JSONData);
+        //Iris.proxyImports.set("animateatlas.JSONData2020", animateatlas.JSONData2020);
+        //Iris.proxyImports.set("animateatlas.Main", animateatlas.Main);
+        //Iris.proxyImports.set("animateatlas.displayobject.SpriteAnimationLibrary", animateatlas.displayobject.SpriteAnimationLibrary);
+        //Iris.proxyImports.set("animateatlas.displayobject.SpriteMovieClip", animateatlas.displayobject.SpriteMovieClip);
+        //Iris.proxyImports.set("animateatlas.displayobject.SpriteSymbol", animateatlas.displayobject.SpriteSymbol);
+        //Iris.proxyImports.set("animateatlas.tilecontainer.TileAnimationLibrary", animateatlas.tilecontainer.TileAnimationLibrary);
+        //Iris.proxyImports.set("animateatlas.tilecontainer.TileContainerMovieClip", animateatlas.tilecontainer.TileContainerMovieClip);
+        //Iris.proxyImports.set("animateatlas.tilecontainer.TileContainerSymbol", animateatlas.tilecontainer.TileContainerSymbol);
+
+
     }
 }
