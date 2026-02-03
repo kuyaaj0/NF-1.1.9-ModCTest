@@ -87,6 +87,7 @@ class CrashHandler
 		}
 		catch (e:haxe.Exception)
 			trace('Couldn\'t save error message. (${e.message})');
+			trace(Std.string(states.MainMenuState.novaFlareEngineCommit + '\n' + '$m\n$stackLabel'));
 		#end
 
 		// mobile.backend.SUtil.showPopUp('$m\n$stackLabel', "Error!");
