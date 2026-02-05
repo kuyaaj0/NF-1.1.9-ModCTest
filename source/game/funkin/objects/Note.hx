@@ -304,8 +304,13 @@ class Note extends FlxSprite
 
 		if (noteData > -1)
 		{
-			texture = '';
-			
+			try {
+				texture = '';
+			} catch (e:Dynamic) {
+				trace('Error loading note skin: ' + e);
+				//reloadNote();
+			}
+
 			rgbShader = new RGBShaderReference(this, initializeGlobalRGBShader(noteData));
 			if (PlayState.SONG != null && (PlayState.SONG.disableNoteRGB || !ClientPrefs.data.noteRGB || ClientPrefs.data.noteColorSwap))
 				rgbShader.enabled = false;
@@ -425,6 +430,8 @@ class Note extends FlxSprite
 
 		if (PlayState.isPixelStage)
 		{
+			skinPixel = skin;
+
 			if (isSustainNote)
 			{
 				var graphic = Paths.image('pixelUI/' + skinPixel + 'ENDS' + skinPostfix, null, false);
@@ -516,11 +523,9 @@ class Note extends FlxSprite
 			}
 		}
 
-		skinPixel = skin;
-
 		skinPostfix = getNoteSkinPostfix(texture);
 
-		customSkin = skin + skinPostfix; //前期加载的箭头数据和设置选择的最后结果
+		customSkin = skin + skinPostfix; //前期加载的箭头数据和设置选择的最后结果		
 
 		var pathPixel = PlayState.isPixelStage ? 'pixelUI/' : '';
 
@@ -712,6 +717,7 @@ class Note extends FlxSprite
 		var Mscale = ExtraKeysHandler.instance.data.scales[mania];
 		if (PlayState.isPixelStage)
 			Mscale = ExtraKeysHandler.instance.data.pixelScales[mania];
+
 		var sWidth = Note.swagWidthUnscaled * Mscale;
 
 		if (isSustainNote && (mustPress || !ignoreNote) && (!mustPress || (wasGoodHit || (prevNote.wasGoodHit && !canBeHit))))
