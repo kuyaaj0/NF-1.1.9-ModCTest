@@ -95,12 +95,12 @@ jobs:
           if [ "${{ steps.android_cache.outputs.update_libs }}" == "true" ]; then
             if [ "${{ steps.android_cache.outputs.skip_cache }}" == "true" ]; then
               echo "强制重新安装所有Android依赖..."
-              haxelib install hmm 
-              haxelib run hmm install
+              haxelib install hmm --quite
+              haxelib run hmm install --quite
             elif [ -n "${{ steps.android_cache.outputs.libs_to_update }}" ]; then
               echo "更新指定Android依赖: ${{ steps.android_cache.outputs.libs_to_update }}"
-              haxelib install hmm
-              haxelib run hmm reinstall --force $(echo "${{ steps.android_cache.outputs.libs_to_update }}")
+              haxelib install hmm --quite
+              haxelib run hmm reinstall --force $(echo "${{ steps.android_cache.outputs.libs_to_update }}") --quite
             fi
           else
             echo "使用缓存，无需安装依赖"
@@ -229,12 +229,12 @@ jobs:
           if [ "${{ steps.ios_cache.outputs.update_libs }}" == "true" ]; then
             if [ "${{ steps.ios_cache.outputs.skip_cache }}" == "true" ]; then
               echo "强制重新安装所有iOS依赖..."
-              haxelib install hmm 
-              haxelib run hmm install
+              haxelib install hmm --quite
+              haxelib run hmm install --quite
             elif [ -n "${{ steps.ios_cache.outputs.libs_to_update }}" ]; then
               echo "更新指定iOS依赖: ${{ steps.ios_cache.outputs.libs_to_update }}"
-              haxelib install hmm
-              haxelib run hmm reinstall --force $(echo "${{ steps.ios_cache.outputs.libs_to_update }}")
+              haxelib install hmm --quite
+              haxelib run hmm reinstall --force $(echo "${{ steps.ios_cache.outputs.libs_to_update }}") --quite
             fi
           else
             echo "使用缓存，无需安装依赖"
