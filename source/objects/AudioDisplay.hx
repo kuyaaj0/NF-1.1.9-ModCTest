@@ -8,8 +8,6 @@ class AudioDisplay extends FlxSpriteGroup
 	var analyzer:SpectralAnalyzer;
 
 	public var snd:FlxSound;
-	
-	public var inRelax:Bool = false;
 
 	var _height:Int;
 	var line:Int;
@@ -35,13 +33,8 @@ class AudioDisplay extends FlxSpriteGroup
 		@:privateAccess
 		if (snd != null)
 		{
-		    if(!inRelax){
-    			analyzer = new SpectralAnalyzer(snd._channel.__audioSource, line, 1, 5);
-    			analyzer.fftN = 256 * ClientPrefs.data.audioDisplayQuality;
-    		}else{
-    		    analyzer = new SpectralAnalyzer(snd._channel.__audioSource, line, 1, 5);
-    			analyzer.fftN = 256 * ClientPrefs.data.RelaxAudioDisplayQuality;
-    		}
+		    analyzer = new SpectralAnalyzer(snd._channel.__audioSource, Std.int(line * 1 + Math.abs(0.05 * (4 - ClientPrefs.data.audioDisplayQuality))), 1, 5);
+    		analyzer.fftN = 256 * ClientPrefs.data.audioDisplayQuality;
 		}
 	}
 

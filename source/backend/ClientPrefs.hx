@@ -158,12 +158,6 @@ import game.funkin.backend.ExtraKeysHandler.EKNoteColor;
 
 	//For Extra Keys (maybe)
 	public var showKeybinds:Bool = false;
-
-	/////RelaxState Options\\\\\
-	public var NextSongs:String = 'Next';
-	public var RelaxAudioDisplayQuality:Int = 2;
-	public var RelaxAudioNumber:Int = 3;
-	public var RelaxAudioSymmetry:Bool = true;
 	
 	public var enableRecordRotation:Bool = true;
 	public var enableBpmZoom:Bool = true;

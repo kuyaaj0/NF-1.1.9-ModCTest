@@ -331,10 +331,6 @@ class MainMenuState extends MusicBeatState
 		addVirtualPad(MainMenuStateC, A_B_E);
 		virtualPad.cameras = [camHUD];
 
-		var buttonX = FlxG.width - 100 - 10;
-		var substate = new flixel.addons.ui.FlxUIButton(buttonX,10,"hello",openSub);
-		add(substate);
-
 		var soundBuffer = FlxG.sound.music;
 
 		// 实例化并检测
@@ -344,10 +340,6 @@ class MainMenuState extends MusicBeatState
 		trace("BPM Result: " + result.bpm);
 		
 		super.create();
-	}
-
-	function openSub():Void{
-		openSubState(new substates.RelaxSubState());
 	}
 
 	var canClick:Bool = true;

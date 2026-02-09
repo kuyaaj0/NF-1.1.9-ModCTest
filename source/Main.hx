@@ -1,5 +1,6 @@
 ﻿package;
 
+import backend.ClientPrefs;
 import haxe.io.Path;
 import haxe.ui.Toolkit;
 
@@ -70,7 +71,6 @@ class Main extends Sprite
 
 	public static function main():Void
 	{
-	    TraceInterceptor.init();
 		#if (cpp && windows)
 		backend.device.Native.fixScaling();
 		backend.device.Native.setWindowDarkMode(true, true);
@@ -160,6 +160,9 @@ class Main extends Sprite
 
 		ExtraKeysHandler.instance = new ExtraKeysHandler();
 		ClientPrefs.loadDefaultKeys();
+
+		if(ClientPrefs.data.developerMode)
+			TraceInterceptor.init();
 
 		var flxGame:FlxGame = new FlxGame(#if (openfl >= "9.2.0") 1280, 720 #else gameConfig.width, gameConfig.height #end,gameConfig.initialState, #if (flixel < "5.0.0") gameConfig.zoom, #end gameConfig.framerate, gameConfig.framerate, gameConfig.skipSplash, gameConfig.startFullscreen);
 		addChild(flxGame);
