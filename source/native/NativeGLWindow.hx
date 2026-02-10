@@ -27,7 +27,7 @@ static LRESULT CALLBACK CircleWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 ')
 
-class FlxNativeCircleWindow
+class NativeGLWindow
 {
     @:functionCode('
         const char* szClass = "NativeCircleClass";
