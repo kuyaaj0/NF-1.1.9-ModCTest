@@ -47,7 +47,7 @@ class ExtraCounter extends Sprite
 		graphMonitor.tabSelectorAlpha = 0.3;
 
         graphMonitor.addMonitor("Update Frame", "FPS", function() return DataCalc.updateFPS, 0, function() return ClientPrefs.data.framerate, 0xFFFF005D, 0xFF00FF91);
-        graphMonitor.addMonitor("Draw Frame", "FPS", function() return DataCalc.drawFPS, 0, function() return (ClientPrefs.data.splitUpdate ? ClientPrefs.data.drawFramerate : ClientPrefs.data.framerate), 0xFFFF005D, 0xFF00FF91);
+        graphMonitor.addMonitor("Draw Frame", "FPS", function() return DataCalc.drawFPS, 0, function() return (ClientPrefs.data.lockRender ? ClientPrefs.data.drawFramerate : ClientPrefs.data.framerate), 0xFFFF005D, 0xFF00FF91);
 		graphMonitor.addMonitor("App Mem", "MB", function() return DataCalc.getAppMem(), 0, 4096, 0xFF00FF91, 0xFFFF005D);
 		graphMonitor.addMonitor("GC Mem", "MB", function() return DataCalc.getGcMem(), 0, 10, 0xFF00FF91, 0xFFFF005D);
 		addChild(graphMonitor);
@@ -60,7 +60,7 @@ class ExtraCounter extends Sprite
 	{
 		for (label in [this.typeData, this.typeName])
 		{
-			var maxValue:Float = ClientPrefs.data.splitUpdate ? ClientPrefs.data.drawFramerate : ClientPrefs.data.framerate;
+			var maxValue:Float = ClientPrefs.data.lockRender ? ClientPrefs.data.drawFramerate : ClientPrefs.data.framerate;
 			if (ClientPrefs.data.rainbowFPS)
 			{
 				label.textColor = ColorReturn.transfer(DataCalc.drawFPS, ClientPrefs.data.drawFramerate);
@@ -82,7 +82,7 @@ class ExtraCounter extends Sprite
 		var showTime:Float = Math.floor((DataCalc.updateFrameTime) * 100) / 100;
 		outputText += DataCalc.updateFPS + " / " + ClientPrefs.data.framerate + "fps (" + Display.fix(showTime, 2) + " ms) \n";
 		showTime = Math.floor((DataCalc.drawFrameTime) * 100) / 100;
-		outputText += DataCalc.drawFPS + " / " + (ClientPrefs.data.splitUpdate ? ClientPrefs.data.drawFramerate : ClientPrefs.data.framerate) + "fps (" + Display.fix(showTime, 2) + " ms) \n";
+		outputText += DataCalc.drawFPS + " / " + (ClientPrefs.data.lockRender ? ClientPrefs.data.drawFramerate : ClientPrefs.data.framerate) + "fps (" + Display.fix(showTime, 2) + " ms) \n";
 		outputText += "APP:" + Display.fix(DataCalc.appMem, 2) + " GC:" + Display.fix(DataCalc.gcMem, 2) + " MB \n";
 		this.typeData.text = outputText;
 		typeData.width = typeData.textWidth;

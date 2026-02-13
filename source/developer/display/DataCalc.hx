@@ -66,13 +66,13 @@ class DataCalc
 		var drawWait:Float = Lib.getTimer() - drawTimeSave;
 
 		/////////////////// →更新
-		if (Math.abs(Math.floor(1000 / drawFrameTime + 0.5) - Math.floor(1000 / (drawWait / drawCount) + 0.5)) > (ClientPrefs.data.splitUpdate ? (ClientPrefs.data.drawFramerate / 5) : (ClientPrefs.data.framerate / 5))) 
+		if (Math.abs(Math.floor(1000 / drawFrameTime + 0.5) - Math.floor(1000 / (drawWait / drawCount) + 0.5)) > (ClientPrefs.data.lockRender ? (ClientPrefs.data.drawFramerate / 5) : (ClientPrefs.data.framerate / 5))) 
 			drawFrameTime = drawWait / drawCount;
 		else
 			drawFrameTime = drawFrameTime * 0.9 + drawWait / drawCount * 0.1;
 
 		drawFPS = Math.floor(1000 / drawFrameTime + 0.5);
-		if (ClientPrefs.data.splitUpdate) {
+		if (ClientPrefs.data.lockRender) {
 			if (drawFPS > ClientPrefs.data.drawFramerate) {
 				drawFPS = ClientPrefs.data.drawFramerate;
 			}
