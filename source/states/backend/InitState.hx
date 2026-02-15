@@ -109,9 +109,7 @@ class InitState extends MusicBeatState
 
 			if (FlxG.game != null)
 				Main.resetSpriteCache(FlxG.game);
-		});
-
-		
+		});		
 
 		var maxTextureSize:Int = GL.getParameter(GL.MAX_TEXTURE_SIZE);
 		trace('maxTextureSize: ' + maxTextureSize);

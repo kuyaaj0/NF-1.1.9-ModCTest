@@ -514,7 +514,7 @@ class Note extends FlxSprite
 		var pathPixel = PlayState.isPixelStage ? 'pixelUI/' : '';
 
 		skin = texture + postfix;
-		if (texture == defaultNoteSkin) //如果是默认箭头路径
+		if (skin == defaultNoteSkin) //如果是默认箭头路径
 		{
 			skin = PlayState.SONG != null ? PlayState.SONG.arrowSkin : null; //兼容了铺面json设置的箭头
 			if (skin != null && skin.length > 0) {//当发现铺面json的箭头读取没问题时
@@ -522,12 +522,12 @@ class Note extends FlxSprite
 					skinPostfix = ''; //返回为默认贴图
 					loadedNote.set(currentKey, {texture: texture, postfix: postfix, skin: skin, skinPostfix: skinPostfix});
 					return; //直接跳过后续读取,获取为铺面json的路径
-				}
+				} 
 			}
+			skin = defaultNoteSkin;
 		}
 
-		skin = defaultNoteSkin;
-		skinPostfix = getNoteSkinPostfix(texture);
+		skinPostfix = getNoteSkinPostfix(skin);
 
 		if (!Paths.fileExists('images/' + pathPixel + skin + skinPostfix + '.png', IMAGE)) {
 			skinPostfix = '';

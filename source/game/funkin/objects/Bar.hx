@@ -1,6 +1,9 @@
 ﻿package game.funkin.objects;
 
 import flixel.math.FlxRect;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 
 class Bar extends FlxSpriteGroup
 {
@@ -19,7 +22,7 @@ class Bar extends FlxSpriteGroup
 	public var barOffset:FlxPoint = FlxPoint.get(3, 3);
 
 	public function new(x:Float, y:Float, image:String = 'healthBar', valueFunction:Void->Float = null, boundX:Float = 0, boundY:Float = 1,
-			?oldVersion:Bool = false)
+			?oldVersion:Bool = false, ?testBitmap:BitmapData = null)
 	{
 		super(x, y);
 
@@ -27,6 +30,7 @@ class Bar extends FlxSpriteGroup
 		setBounds(boundX, boundY);
 
 		bg = new FlxSprite().loadGraphic(Paths.image(image));
+		if (testBitmap != null) bg.pixels = testBitmap;
 		bg.antialiasing = ClientPrefs.data.antialiasing;
 		barWidth = Std.int(bg.width - 6);
 		barHeight = Std.int(bg.height - 6);
@@ -38,6 +42,8 @@ class Bar extends FlxSpriteGroup
 		rightBar = new FlxSprite().makeGraphic(Std.int(bg.width), Std.int(bg.height), FlxColor.WHITE);
 		rightBar.color = FlxColor.BLACK;
 		rightBar.antialiasing = ClientPrefs.data.antialiasing;
+
+		checkForHollowShape();
 
 		if (oldVersion)
 		{
@@ -138,6 +144,161 @@ class Bar extends FlxSpriteGroup
 			rightBar.clipRect = new FlxRect(0, 0, Std.int(bg.width), Std.int(bg.height));
 		}
 		updateBar();
+	}
+
+	private function checkForHollowShape():Void
+	{
+		if (bg == null || bg.pixels == null)
+			return;
+
+		var bitmap:BitmapData = bg.pixels;
+		var w:Int = bitmap.width;
+		var h:Int = bitmap.height;
+		
+		var alphaThreshold:Int = 50; // Pixels with Alpha >= 50 stop the flood (act as border)
+		
+		var visited:openfl.Vector<Int> = new openfl.Vector<Int>(w * h, true);
+		// Initialize vector to 0
+		for (i in 0...visited.length) visited[i] = 0;
+
+		var queue:Array<Int> = []; // Store indices (y * w + x)
+
+		// Add all edge pixels to queue
+		for (x in 0...w) {
+			queue.push(x); // Top row (y=0)
+			queue.push((h - 1) * w + x); // Bottom row
+		}
+		for (y in 1...h - 1) {
+			queue.push(y * w); // Left col
+			queue.push(y * w + (w - 1)); // Right col
+		}
+
+		var work:BitmapData = new BitmapData(w, h, true, 0x00000000);
+		var idx:Int;
+		var curX:Int, curY:Int;
+		var pixelAlpha:Int;
+		
+		bitmap.lock();
+		work.lock();
+
+		while (queue.length > 0)
+		{
+			idx = queue.pop();
+			
+			if (visited[idx] == 1) continue;
+			
+			curX = idx % w;
+			curY = Std.int(idx / w);
+			
+			// Check Alpha
+			pixelAlpha = (bitmap.getPixel32(curX, curY) >> 24) & 0xFF;
+			
+			if (pixelAlpha >= alphaThreshold)
+			{
+				// Hit a wall (Border/Solid Object). Stop flooding this path.
+				continue;
+			}
+			
+			// It is passable (Low Alpha / Transparent). Mark as Outside.
+			visited[idx] = 1;
+			
+			// Add neighbors
+			if (curX > 0) queue.push(idx - 1);
+			if (curX < w - 1) queue.push(idx + 1);
+			if (curY > 0) queue.push(idx - w);
+			if (curY < h - 1) queue.push(idx + w);
+		}
+
+
+		var alphaThreshold:Int = 50; // Definition of "Shell" boundary
+		var wallThreshold:Int = 250; // Definition of "Solid Wall" that blocks Bar expansion
+		var barQueue:Array<Int> = [];
+		
+		for (i in 0...w * h)
+		{
+			if (visited[i] == 0) // Inside the Shell
+			{
+				curX = i % w;
+				curY = Std.int(i / w);
+				pixelAlpha = (bitmap.getPixel32(curX, curY) >> 24) & 0xFF;
+
+				if (pixelAlpha < alphaThreshold)
+				{
+					visited[i] = 2; // Mark as Bar
+					barQueue.push(i);
+				}
+			}
+		}
+		
+		while (barQueue.length > 0)
+		{
+			idx = barQueue.pop();
+			
+			curX = idx % w;
+			curY = Std.int(idx / w);
+			
+			// Check neighbors
+			var neighbors:Array<Int> = [];
+			if (curX > 0) neighbors.push(idx - 1);
+			if (curX < w - 1) neighbors.push(idx + 1);
+			if (curY > 0) neighbors.push(idx - w);
+			if (curY < h - 1) neighbors.push(idx + w);
+			
+			for (nIdx in neighbors)
+			{
+				if (visited[nIdx] == 0) // It is Shell/Inside (Not Outside, Not Visited)
+				{
+					var nX:Int = nIdx % w;
+					var nY:Int = Std.int(nIdx / w);
+					var nAlpha:Int = (bitmap.getPixel32(nX, nY) >> 24) & 0xFF;
+					
+					if (nAlpha <= wallThreshold)
+					{
+						// It is not a solid wall. It is part of the soft inner edge.
+						visited[nIdx] = 2; // Mark as Bar
+						barQueue.push(nIdx);
+					}
+				}
+			}
+		}
+		
+		for (x in 0...w)
+		{
+			for (y in 0...h)
+			{
+				idx = y * w + x;
+				if (visited[idx] == 2) // Bar
+				{
+					work.setPixel32(x, y, 0xFFFFFFFF);
+				}
+				else // Outside (1) or Unreached Shell/Wall/Outer Glow (0)
+				{
+					work.setPixel32(x, y, 0x00000000);
+				}
+			}
+		}
+
+		bitmap.unlock();
+		work.unlock();
+		
+		var barBounds:Rectangle = work.getColorBoundsRect(0xFFFFFFFF, 0xFFFFFFFF, true);
+		
+		if (barBounds.width > 0 && barBounds.height > 0)
+		{
+			leftBar.pixels = work.clone();
+			rightBar.pixels = work;
+
+			barWidth = Std.int(bg.width);
+			barHeight = Std.int(bg.height);
+			barOffset.set(0, 0);
+
+			leftBar.antialiasing = ClientPrefs.data.antialiasing;
+			rightBar.antialiasing = ClientPrefs.data.antialiasing;
+		}
+		else
+		{
+			work.dispose();
+		}
 	}
 
 	private function set_percent(value:Float)
