@@ -1,5 +1,6 @@
 package options.groupData;
 
+import lime.graphics.opengl.GL;
 import shaders.ColorblindFilter;
 
 class GeneralGroup extends OptionCata
@@ -22,6 +23,10 @@ class GeneralGroup extends OptionCata
 		var option:Option = new Option(this, 'lockRender', BOOL);
 		addOption(option);
 		option.onChange = onChangelockRender;
+
+		var option:Option = new Option(this, 'renderThread', BOOL);
+		addOption(option, true);
+		option.onChange = onChangerenderThread;
 
 		var langArray:Array<String> = languageArray();
 		var option:Option = new Option(this, 'language', STRING, langArray);
@@ -115,6 +120,11 @@ class GeneralGroup extends OptionCata
 	function onChangelockRender()
 	{
 		FlxG.stage.application.window.lockRender = ClientPrefs.data.lockRender;
+	}
+
+	function onChangerenderThread()
+	{
+		GL.setMultiThreaded(ClientPrefs.data.renderThread);
 	}
 
 	function onChangeFilter()

@@ -462,12 +462,12 @@ class Note extends FlxSprite
 		}
 		else
 		{
-			if (!Cache.checkFrame(skin)) addSkinCache(skin);
+			if (!Cache.checkFrame(skin + skinPostfix)) addSkinCache(skin + skinPostfix);
 				
-			frames = Cache.getFrame(skin);
+			frames = Cache.getFrame(skin + skinPostfix);
 
-			if (Cache.currentTrackedAnims.get(skin) != null) {
-			    animation.copyFrom(Cache.currentTrackedAnims.get(skin));
+			if (Cache.currentTrackedAnims.get(skin + skinPostfix) != null) {
+			    animation.copyFrom(Cache.currentTrackedAnims.get(skin + skinPostfix));
             	setGraphicSize(Std.int(width * trackedScale));	//等下这都没改吗
 				updateHitbox();
 			}
@@ -490,14 +490,12 @@ class Note extends FlxSprite
 			animation.play(animName, true);
 	}
 
-	static var oldMod:Bool = false;
-
+	public static var loadedNote:Map<String, {texture:String, postfix:String, skin:String, skinPostfix:String}> = new Map<String, {texture:String, postfix:String, skin:String, skinPostfix:String}>();
 	public static final initSkin:String = 'noteSkins/NOTE_assets';
 	static var skin:String;
-	static var skinPixel:String; //像素箭头路径（数据保存形式类似于defaultNoteSkin）
-	static var customSkin:String = '';
+	static var oldMod:Bool = false;
+	var skinPixel:String; //像素箭头路径（数据保存形式类似于defaultNoteSkin）
 	static var skinPostfix:String = ''; //箭头设置给的后缀
-	public static var loadedNote:Map<String, {texture:String, postfix:String, skin:String}> = new Map<String, {texture:String, postfix:String, skin:String}>();
 
 	public static function reloadPath(texture:String = '', postfix:String = '')
 	{
@@ -509,35 +507,33 @@ class Note extends FlxSprite
 		var currentKey = getLoadDataKey(texture, postfix);
 		if (loadedNote.exists(currentKey)) {
 			skin = loadedNote.get(currentKey).skin;
+			skinPostfix = loadedNote.get(currentKey).skinPostfix;
 			return;
 		}
+
+		var pathPixel = PlayState.isPixelStage ? 'pixelUI/' : '';
 
 		skin = texture + postfix;
 		if (texture == defaultNoteSkin) //如果是默认箭头路径
 		{
 			skin = PlayState.SONG != null ? PlayState.SONG.arrowSkin : null; //兼容了铺面json设置的箭头
 			if (skin != null && skin.length > 0) {//当发现铺面json的箭头读取没问题时
-				if (!Paths.fileExists('images/' + skin + '.png', IMAGE))
-					skin = defaultNoteSkin + getNoteSkinPostfix(defaultNoteSkin); //返回为默认贴图
-				loadedNote.set(currentKey, {texture: texture, postfix: postfix, skin: skin});
-				return; //直接跳过后续读取,获取为铺面json的路径
+				if (Paths.fileExists('images/' + skin + '.png', IMAGE)) {
+					skinPostfix = ''; //返回为默认贴图
+					loadedNote.set(currentKey, {texture: texture, postfix: postfix, skin: skin, skinPostfix: skinPostfix});
+					return; //直接跳过后续读取,获取为铺面json的路径
+				}
 			}
 		}
 
+		skin = defaultNoteSkin;
 		skinPostfix = getNoteSkinPostfix(texture);
 
-		customSkin = skin + skinPostfix; //前期加载的箭头数据和设置选择的最后结果		
-
-		var pathPixel = PlayState.isPixelStage ? 'pixelUI/' : '';
-
-		if (Paths.fileExists('images/' + pathPixel + customSkin + '.png', IMAGE))
-		{
-			skin = customSkin;
-		} else {
-			skin = defaultNoteSkin + getNoteSkinPostfix(defaultNoteSkin); //返回为默认贴图
+		if (!Paths.fileExists('images/' + pathPixel + skin + skinPostfix + '.png', IMAGE)) {
+			skinPostfix = '';
 		}
 
-		loadedNote.set(currentKey, {texture: texture, postfix: postfix, skin: skin});
+		loadedNote.set(currentKey, {texture: texture, postfix: postfix, skin: skin, skinPostfix: skinPostfix});
 	}
 
 	public static function getNoteSkinPostfix(?texture:String = ''):String
@@ -776,7 +772,7 @@ class Note extends FlxSprite
 
 	public static function init()
 	{
-		loadedNote = new Map<String, {texture:String, postfix:String, skin:String}>();
+		loadedNote = new Map<String, {texture:String, postfix:String, skin:String, skinPostfix:String}>();
 
 		if (FileSystem.exists(Paths.mods(Mods.currentModDirectory + '/images/NOTE_assets.png')) && ClientPrefs.data.noteSkin == ClientPrefs.defaultData.noteSkin) {
 			defaultNoteSkin = 'NOTE_assets';
@@ -788,7 +784,7 @@ class Note extends FlxSprite
 			reloadPath(defaultNoteSkin);
 		}
 
-		addSkinCache(skin);
+		addSkinCache(skin + skinPostfix);
 	}
 
 	static function addSkinCache(skin:String)

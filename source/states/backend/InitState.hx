@@ -121,8 +121,6 @@ class InitState extends MusicBeatState
 		trace("GL_RENDERER=" + GL.getString(GL.RENDERER));
 		trace("GL_VERSION=" + GL.getString(GL.VERSION));
 
-		//GL.setMultiThreaded(false);  //默认是开启的渲染线程运行渲染，设为false后，与原本GL行为一致
-
 		Language.resetData();
 
 		#if CHECK_FOR_UPDATES
