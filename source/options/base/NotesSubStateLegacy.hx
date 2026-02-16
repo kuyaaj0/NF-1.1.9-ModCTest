@@ -83,6 +83,8 @@ class NotesSubStateLegacy extends MusicBeatSubstate
         hsbText.setScale(0.65,0.65);
 		add(hsbText);
 
+		addVirtualPad(LEFT_FULL, A_B);
+
 		changeSelection();
 	}
 

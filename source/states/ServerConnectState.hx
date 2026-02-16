@@ -1,118 +1,107 @@
+// ServerConnectState.hx
 package states;
 
 import flixel.FlxG;
+import flixel.FlxState;
 import flixel.text.FlxText;
-import flixel.FlxSprite;
+import flixel.ui.FlxButton;
+import flixel.addons.ui.FlxInputText;
 import flixel.util.FlxColor;
-import haxe.Json;
-import haxe.Timer;
-import sys.Http;
-import sys.net.Host;
-import sys.net.Socket;
-import hx.ws.WebSocket;
-import cpp.vm.Thread;
+import server.nakama.NakamaStorage;
+import server.nakama.NakamaClient.NakamaConfig;
 
-class ServerConnectState extends MusicBeatState
-{
-    var statusText:FlxText;
-    var wsThread:Thread;
-    var ws:WebSocket;
-    var token:String;
-    var lastMessage:String = "";
-
-    override function create()
-    {
+class ServerConnectState extends FlxState {
+    
+    private var nakama:NakamaStorage;
+    private var statusText:FlxText;
+    private var usernameInput:FlxInputText;
+    private var passwordInput:FlxInputText;
+    private var loginButton:FlxButton;
+    private var registerButton:FlxButton;
+    
+    override public function create():Void {
         super.create();
         
-        statusText = new FlxText(0, 0, 0, "Start...", 32);
-        statusText.screenCenter();
+        // 配置
+        var config:NakamaConfig = {
+            host: "127.0.0.1",
+            port: 7350,
+            serverKey: "defaultkey",
+            ssl: false
+        };
+        
+        nakama = new NakamaStorage(config);
+        
+        // UI
+        statusText = new FlxText(0, 50, 0, "Please login or register", 16);
+        statusText.screenCenter(X);
         add(statusText);
         
-        Thread.create(function() {
-            authenticate();
+        usernameInput = new FlxInputText(0, 100, 250, "Username");
+        usernameInput.screenCenter(X);
+        add(usernameInput);
+        
+        passwordInput = new FlxInputText(0, 150, 250, "Password");
+        passwordInput.screenCenter(X);
+        passwordInput.passwordMode = true;
+        add(passwordInput);
+        
+        loginButton = new FlxButton(0, 220, "Login", onLoginClick);
+        loginButton.screenCenter(X);
+        add(loginButton);
+        
+        registerButton = new FlxButton(0, 260, "Register", onRegisterClick);
+        registerButton.screenCenter(X);
+        add(registerButton);
+    }
+    
+    private function onLoginClick():Void {
+        var username = StringTools.trim(usernameInput.text);
+        var password = passwordInput.text;
+        
+        if (username == "" || password == "") {
+            statusText.text = "Username and password cannot be empty";
+            return;
+        }
+        
+        statusText.text = "Logging in...";
+        loginButton.active = false;
+        
+        nakama.secureLogin(username, password, function(response) {
+            loginButton.active = true;
+            
+            if (response.success) {
+                statusText.text = "Welcome, " + response.session.username + "!";
+                trace("Login success! UserID: " + response.session.userId);
+                // FlxG.switchState(new MainGameState());
+            } else {
+                statusText.text = "Login failed: " + response.error;
+                passwordInput.text = "";
+            }
         });
     }
-
-     function authenticate()
-    {
-        try {
-            var deviceId = "flixel-" + Std.string(Math.random()) + "-" + Std.string(Math.random());
-            deviceId = deviceId.substr(0, 32);
-            
-            var url = "http://127.0.0.1:7350/v2/account/authenticate/device?create=true";
-            var http = new Http(url);
-            
-            http.setHeader("Content-Type", "application/json");
-            http.setHeader("Authorization", "Basic ZGVmYXVsdGtleTo=");
-            
-            var body = Json.stringify({ id: deviceId });
-            http.setPostData(body);
-            
-            http.onData = function(data:String) {
-                trace("✅ 认证成功");
-                var response = Json.parse(data);
-
-                connectWebSocket(response.token);
-            };
-            
-            http.onError = function(error:String) {
-                trace("❌ 认证失败: " + error);
-            };
-            
-            http.request(true);
-            
-        } catch(e:Dynamic) {
-            trace("❌ 异常: " + e);
-        }
-    }
-
-    function connectWebSocket(token)
-    {
-        try {
-            ws = new WebSocket("ws://127.0.0.1:7350/ws?token=" + token);
-            trace("✅WebSocket连接成功");
-            
-            ws.onopen = function() {
- 
-            var msg = {
-                cid: "1",
-                rpc: {
-                    id: "welcome",
-                    payload: "Hello from Flixel CPP!"
-                }
-            };
-            
-            var json = Json.stringify(msg);
-            ws.send(json);
-        };
-            
-            ws.onmessage = function(msg:Dynamic) {
-                trace("服务器消息" + msg);
-            };
-            
-            ws.onclose = function() {
-                trace("连接已关闭");
-            };
-            
-            ws.onerror = function(msg:String) {
-                trace("WebSocket错误: " + msg);
-            };
-        } catch(e:Dynamic) {
-            trace("❌ WebSocket 错误: " + e);
-        }
-    }
-
-    override function update(elapsed:Float)
-    {
-        super.update(elapsed);
+    
+    private function onRegisterClick():Void {
+        var username = StringTools.trim(usernameInput.text);
+        var password = passwordInput.text;
         
-        if (controls.BACK)
-        {
-            if (ws != null) {
-                ws.close();
-                ws = null;
-            }
-            MusicBeatState.switchState(new MainMenuState());
+        if (username == "" || password == "") {
+            statusText.text = "Username and password cannot be empty";
+            return;
         }
+        
+        statusText.text = "Registering...";
+        registerButton.active = false;
+        
+        nakama.secureRegister(username, password, function(response) {
+            registerButton.active = true;
+            
+            if (response.success) {
+                statusText.text = "Registration successful! You can now login.";
+                trace("Register success! UserID: " + response.userId);
+            } else {
+                statusText.text = "Registration failed: " + response.error;
+            }
+        });
     }
 }
