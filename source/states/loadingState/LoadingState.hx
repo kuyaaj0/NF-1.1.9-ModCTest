@@ -24,10 +24,9 @@ import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFilterFrames;
 
 import backend.thread.ThreadEvent;
-import backend.state.loadingState.*;
+import states.loadingState.backend.*;
 
 import states.freeplayState.FreeplayState;
-import states.loadingState.backend.AsyncTextureUploader;
 import states.loadingState.backend.ScriptExprTools;
 
 import game.funkin.backend.Song;
@@ -37,36 +36,68 @@ import game.funkin.cutscenes.DialogueBoxPsych;
 
 class LoadingState extends MusicBeatState
 {
-	public static var loaded(get, set):Int; //已经加载的数量
-	public static var loadMax:Int = 0; //总体需要加载的数量
-	static var pendingUploads:Int = 0;
-	static var current:LoadingState = null;
-	static var _loaded:Int = 0;
+	public static var instance:LoadingState = null;
+	public var waitPrepare:Bool = false;
+	var _loaded:Int = 0;
+	public var loaded(get, set):Int;
+	public var loadMax:Int = 0;
 
-	static var requestedBitmaps:Map<String, BitmapData> = []; //储存下加载的纹理，再最后进入playstate的时候输出总结
+	var requestedBitmaps:Map<String, BitmapData> = []; //储存下加载的纹理，再最后进入playstate的时候输出总结
 
-	static var loadThread:ThreadPool = null; //真正加载时的总线程池
-	static var prepareEvent:ThreadEvent = null;
+	var loadThread:ThreadPool = null; //真正加载时的总线程池
+	var prepareEvent:ThreadEvent = null;
 
-	static var prepareMutex:Mutex = new Mutex(); //准备资源锁，这是为了防止数据提前被主线程接收
+	var prepareMutex:Mutex = new Mutex(); //准备资源锁，这是为了防止数据提前被主线程接收
 
 	static var isPlayState:Bool = false; //如果是要进入playstate
-	static var waitPrepare:Bool = false; //允许执行prepare事件,false时候不让界面update
+
+	function new(target:FlxState, stopMusic:Bool)
+	{
+		this.target = target;
+		this.stopMusic = stopMusic;
+		loaded = 0;
+		super();
+	}
 
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false, intrusive:Bool = true)
 		MusicBeatState.switchState(getNextState(target, stopMusic, intrusive));
 
-	static inline function get_loaded():Int {
+	function get_loaded():Int {
 		return _loaded;
 	}
-	static function set_loaded(v:Int):Int {
+
+	function set_loaded(v:Int):Int {
 		_loaded = v;
-		if (current != null) {
-			if (loadMax > 0)
-				current.intendedPercent = _loaded / loadMax;
-			else
-				current.intendedPercent = 1;
+		if (loadMax > 0)
+			intendedPercent = _loaded / loadMax;
+		else
+			intendedPercent = 1;
+		return v;
+	}
+
+	function set_curPercent(v:Float):Float {
+		if (curPercent == v) return v;
+		curPercent = v;
+
+		bar.scale.x = button.width / 2 + (FlxG.width - button.width) * curPercent;
+		button.x = FlxG.width * curPercent - button.width * curPercent;
+		bar.updateHitbox();
+		button.updateHitbox();
+		var precent:Float = Math.floor(curPercent * 10000) / 100;
+		if (precent % 1 == 0)
+			precentText.text = precent + '.00%';
+		else if ((precent * 10) % 1 == 0)
+			precentText.text = precent + '0%';
+		else
+			precentText.text = precent + '%'; // 修复显示问题
+
+		if (curPercent == 1)
+		{
+			 FlxTimer.wait(0.1, () -> {
+				onLoad();
+			});
 		}
+
 		return v;
 	}
 
@@ -87,7 +118,6 @@ class LoadingState extends MusicBeatState
 		{
 			if (intrusive)
 			{
-				if (waitPrepare)
 					return new LoadingState(target, stopMusic);
 			}
 			else
@@ -99,18 +129,20 @@ class LoadingState extends MusicBeatState
 
 		if (doPrecache)
 		{
-			pendingUploads = 0;
-			startThreads();
+			var loader = new LoadingState(target, stopMusic);
+			instance = loader;
+			DataPreload.startPrepare();
+			loader.startThreads();
 			while (true)
 			{
-				if (checkLoaded())
+				if (loader.checkLoaded())
 				{
-					imagesToPrepare = [];
-					soundsToPrepare = [];
-					musicToPrepare = [];
-					songsToPrepare = [];
-					if (loadThread != null) loadThread.cancel(); // kill all workers safely
-					loadThread = null;
+					loader.imagesToPrepare = [];
+					loader.soundsToPrepare = [];
+					loader.musicToPrepare = [];
+					loader.songsToPrepare = [];
+					if (loader.loadThread != null) loader.loadThread.cancel(); // kill all workers safely
+					loader.loadThread = null;
 					break;
 				}
 				else
@@ -120,14 +152,6 @@ class LoadingState extends MusicBeatState
 		return target;
 	}
 
-	function new(target:FlxState, stopMusic:Bool)
-	{
-		this.target = target;
-		this.stopMusic = stopMusic;
-		loaded = 0;
-		super();
-	}
-
 	var target:FlxState = null;
 	var stopMusic:Bool = false;
 
@@ -135,18 +159,19 @@ class LoadingState extends MusicBeatState
 
 	var bar:FlxSprite;
 
-	var button:LoadButton;
+	var button:Rect;
 	var barHeight:Int = 10;
 
 	var intendedPercent:Float = 0;
-	var curPercent:Float = 0;
+	var curPercent(null, set):Float = 0;
 	var precentText:FlxText;
-	var JustSay:FlxText;
 	var loads:FlxSprite;
 
-	override public function create()
+	override function create()
 	{
 		Paths.clearStoredMemory();
+
+		instance = this;
 
 		var bg = new FlxSprite().loadGraphic(Paths.image(filePath + 'loadScreen'));
 		bg.setGraphicSize(Std.int(FlxG.width));
@@ -174,7 +199,7 @@ class LoadingState extends MusicBeatState
 		bar.updateHitbox();
 		add(bar);
 
-		button = new LoadButton(0, 0, 35, barHeight);
+		button = new Rect(0, 0, 35, barHeight, 10, 10);
 		button.y = FlxG.height - button.height;
 		button.antialiasing = ClientPrefs.data.antialiasing;
 		button.updateHitbox();
@@ -188,53 +213,30 @@ class LoadingState extends MusicBeatState
 		precentText.x = FlxG.width - precentText.width - 2;
 		precentText.y = FlxG.height - precentText.height - barHeight - 2;
 
-		JustSay = new FlxText(0, 600, FlxG.width, '', 30);
-		JustSay.setFormat(Paths.font(Language.get('fontName', 'ma') + '.ttf'), 25, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.TRANSPARENT);
-		JustSay.antialiasing = ClientPrefs.data.antialiasing;
-		add(JustSay);
-
-		JustSay.y = FlxG.height - precentText.height - barHeight - 2;
-		JustSay.x = 10;
-
-		try
-		{
-			var filename:String = 'language/JustSay/JustSay-' + Language.get('justsayLang', 'ma') + '.txt';
-			var file:String = File.getContent(Paths.getSharedPath(filename));
-			var lines:Array<String> = file.split('\n');
-			var randomIndex:Int = FlxG.random.int(0, lines.length);
-			var randomLine:String = lines[randomIndex];
-			JustSay.text = 'Tags: ' + randomLine;
-		}
-		catch (e:Dynamic)
-		{
-			JustSay.text = Std.string(e);
-		}
-
 		GCManager.enable(false);
 
 		super.create();
-		current = this;
 
 		FlxG.signals.postUpdate.addOnce(function()
 		{
 			prepareEvent = ThreadEvent.create(function() {
 				prepareMutex.acquire();
-				startPrepare();
+				waitPrepare = true;
+				DataPreload.startPrepare();
 				prepareMutex.release();
 			}, startThreads);
 		});
-		
 	}
 
-	public static var imagesToPrepare:Array<String> = [];
-	public static var soundsToPrepare:Array<String> = [];
-	public static var musicToPrepare:Array<String> = [];
-	public static var songsToPrepare:Array<String> = [];
+	public var imagesToPrepare:Array<String> = [];
+	public var soundsToPrepare:Array<String> = [];
+	public var musicToPrepare:Array<String> = [];
+	public var songsToPrepare:Array<String> = [];
 
-	public static var chartEvents:Array<Array<Dynamic>> = [];
-	public static var chartNoteTypes:Array<String> = [];
+	public var chartEvents:Array<Array<Dynamic>> = [];
+	public var chartNoteTypes:Array<String> = [];
 
-	public static function prepare(images:Array<String> = null, sounds:Array<String> = null, music:Array<String> = null)
+	public function prepare(images:Array<String> = null, sounds:Array<String> = null, music:Array<String> = null)
 	{
 		if (images != null)
 			for (file in images) putPreload(imagesToPrepare, file);
@@ -249,440 +251,7 @@ class LoadingState extends MusicBeatState
 		if (!ClientPrefs.data.loadingScreen)
 			return;
 
-		clearInvalids();
-
 		isPlayState = true;
-		waitPrepare = true;
-	}
-
-	static function startPrepare()
-	{
-		var song:SwagSong = PlayState.SONG;
-		var folder:String = Paths.formatToSongPath(song.song);
-		try
-		{
-			var path:String = Paths.json('$folder/preload');
-			var json:Dynamic = null;
-
-			#if MODS_ALLOWED
-			var moddyFile:String = Paths.modsJson('$folder/preload');
-			if (FileSystem.exists(moddyFile))
-				json = Json.parse(File.getContent(moddyFile));
-			else if (FileSystem.exists(path))
-				json = Json.parse(File.getContent(path));
-			#else
-			json = Json.parse(Assets.getText(path));
-			#end
-
-			if (json != null)
-				prepare((!ClientPrefs.data.lowQuality || json.images_low) ? json.images : json.images_low, json.sounds, json.music);
-		}
-		catch (e:Dynamic){}
-
-		if (song.stage == null || song.stage.length < 1)
-			song.stage = StageData.vanillaSongStage(folder);
-
-		var stageData:StageFile = StageData.getStageFile(song.stage);
-		if (stageData != null)
-		{
-			var imgs:Array<String> = [];
-			var snds:Array<String> = [];
-			var mscs:Array<String> = [];
-			if(stageData.preload != null)
-			{
-				for (asset in Reflect.fields(stageData.preload))
-				{
-					var filters:Int = Reflect.field(stageData.preload, asset);
-					var asset:String = asset.trim();
-
-					if(filters < 0 || StageData.validateVisibility(filters))
-					{
-						if(asset.startsWith('images/'))
-							imgs.push(asset.substr('images/'.length));
-						else if(asset.startsWith('sounds/'))
-							snds.push(asset.substr('sounds/'.length));
-						else if(asset.startsWith('music/'))
-							mscs.push(asset.substr('music/'.length));
-					}
-				}
-			}
-			
-			if (stageData.objects != null)
-			{
-				for (sprite in stageData.objects)
-				{
-					if(sprite.type == 'sprite' || sprite.type == 'animatedSprite')
-						if((sprite.filters < 0 || StageData.validateVisibility(sprite.filters)) && !imgs.contains(sprite.image))
-							imgs.push(sprite.image);
-				}
-			}
-			prepare(imgs, snds, mscs);
-		}
-
-		putPreload(songsToPrepare, '$folder/Inst');
-
-		var player1:String = song.player1;
-		var player2:String = song.player2;
-		var gfVersion:String = song.gfVersion;
-		var needsVoices:Bool = song.needsVoices;
-		var prefixVocals:String = needsVoices ? '$folder/Voices' : null;
-		if (gfVersion == null)
-			gfVersion = 'gf';
-
-		preloadCharacter(player1, prefixVocals);
-
-		if (prefixVocals != null)
-		{
-			putPreload(songsToPrepare, prefixVocals);
-			putPreload(songsToPrepare, '$prefixVocals-Player');
-			putPreload(songsToPrepare, '$prefixVocals-Opponent');
-		}
-
-		if (player2 != player1)
-			preloadCharacter(player2, prefixVocals);
-		if (stageData != null && !stageData.hide_girlfriend && gfVersion != player2 && gfVersion != player1)
-			preloadCharacter(gfVersion);
-
-		chartNoteTypes = [];
-		for (section in PlayState.SONG.notes)
-		{
-			for (songNotes in section.sectionNotes)
-			{
-				if (!chartNoteTypes.contains(songNotes[3]))
-				{
-					chartNoteTypes.push(songNotes[3]);
-				}
-			}
-		}
-		chartEvents = [];
-		for (event in PlayState.SONG.events) // Event Notes
-			chartEvents.push(event);
-
-		preloadMisc();
-		preloadScript();
-
-		waitPrepare = false;
-	}
-	
-
-	public static function preloadCharacter(char:String, ?prefixVocals:String)
-	{
-		try
-		{
-			var path:String = Paths.getPath('characters/$char.json', TEXT);
-			#if MODS_ALLOWED
-			var character:Dynamic = Json.parse(File.getContent(path));
-			#else
-			var character:Dynamic = Json.parse(Assets.getText(path));
-			#end
-
-			var isAnimateAtlas:Bool = false;
-			var img:String = character.image;
-			img = img.trim();
-			#if flxanimate
-			var animToFind:String = Paths.getPath('images/$img/Animation.json', TEXT);
-			if (#if MODS_ALLOWED FileSystem.exists(animToFind) || #end Assets.exists(animToFind))
-				isAnimateAtlas = true;
-			#end
-
-			if(!isAnimateAtlas)
-			{
-				var split:Array<String> = img.split(',');
-				for (file in split)
-				{
-					putPreload(imagesToPrepare, file.trim());
-				}
-			}
-			#if flxanimate
-			else
-			{
-				for (i in 0...10)
-				{
-					var st:String = '$i';
-					if(i == 0) st = '';
-	
-					if(Paths.fileExists('images/$img/spritemap$st.png', IMAGE))
-					{
-						//trace('found Sprite PNG');
-						putPreload(imagesToPrepare, '$img/spritemap$st');
-						break;
-					}
-				}
-			}
-			#end
-
-			putPreload(imagesToPrepare, 'icons/' + character.healthicon);
-			putPreload(imagesToPrepare, 'icons/icon-' + character.healthicon);
-
-			if (prefixVocals != null && character.vocals_file != null && character.vocals_file.length > 0)
-			{
-				putPreload(songsToPrepare, prefixVocals + "-" + character.vocals_file);
-			}
-			startLuaNamed('characters/' + char + '.lua');
-		}
-		catch (e:Dynamic)
-		{
-		}
-	}
-
-	static function preloadMisc()
-	{
-		var ratingsData:Array<Rating> = Rating.loadDefault();
-		var stageData:StageFile = StageData.getStageFile(PlayState.SONG.stage);
-
-		var uiPrefix:String = '';
-		var uiSuffix:String = '';
-
-		if (stageData == null)
-		{ // Stage couldn't be found, create a dummy stage for preventing a crash
-			stageData = StageData.dummy();
-		}
-
-		PlayState.stageUI = 'normal'; // fix
-		if (stageData.stageUI != null && stageData.stageUI.trim().length > 0)
-			PlayState.stageUI = stageData.stageUI;
-		else
-		{
-			if (stageData.isPixelStage)
-				PlayState.stageUI = "pixel";
-		}
-		if (PlayState.stageUI != "normal")
-		{
-			uiPrefix = PlayState.stageUI + 'UI/';
-			if (PlayState.isPixelStage)
-				uiSuffix = '-pixel';
-		}
-
-		for (rating in ratingsData)
-		{
-			putPreload(imagesToPrepare, uiPrefix + rating.image + uiSuffix);
-		}
-
-		for (i in 0...10)
-			putPreload(imagesToPrepare, uiPrefix + 'num' + i + uiSuffix);
-
-		putPreload(imagesToPrepare, uiPrefix + 'ready' + uiSuffix);
-		putPreload(imagesToPrepare, uiPrefix + 'set' + uiSuffix);
-		putPreload(imagesToPrepare, uiPrefix + 'go' + uiSuffix);
-		putPreload(imagesToPrepare, 'healthBar');
-
-		if (PlayState.isStoryMode)  {
-			putPreload(imagesToPrepare, 'speech_bubble');
-		}
-	}
-
-	static function preloadScript()
-	{
-		#if ((LUA_ALLOWED || HSCRIPT_ALLOWED) && sys)
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/'))
-			for (file in FileSystem.readDirectory(folder))
-			{
-				#if LUA_ALLOWED
-				if (file.toLowerCase().endsWith('.lua'))
-					luaFilesCheck(folder + file);
-				#end
-
-				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hx'))
-					hscriptFilesCheck(folder + file);
-				#end
-			}
-
-		var songName = PlayState.SONG.song;
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'data/$songName/'))
-			for (file in FileSystem.readDirectory(folder))
-			{
-				#if LUA_ALLOWED
-				if (file.toLowerCase().endsWith('.lua'))
-					luaFilesCheck(folder + file);
-				#end
-
-				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hx'))
-					hscriptFilesCheck(folder + file);
-				#end
-			}
-
-		startLuaNamed('stages/' + PlayState.SONG.stage + '.lua');
-		startHscriptNamed('stages/' + PlayState.SONG.stage + '.hx');
-
-		for (noteType in chartNoteTypes)
-		{
-			startLuaNamed('custom_notetypes/' + noteType + '.lua');
-			startHscriptNamed('custom_notetypes/' + noteType + '.hx');
-		}
-
-		for (event in chartEvents)
-		{
-			startLuaNamed('custom_events/' + event + '.lua');
-			startHscriptNamed('custom_events/' + event + '.hx');
-		}
-		#end
-	}
-
-	static function startLuaNamed(filePath:String)
-	{
-		#if MODS_ALLOWED
-		var pathToLoad:String = Paths.modFolders(filePath);
-		if (!FileSystem.exists(pathToLoad))
-			pathToLoad = Paths.getSharedPath(filePath);
-
-		if (FileSystem.exists(pathToLoad))
-		#else
-		var pathToLoad:String = Paths.getSharedPath(filePath);
-		if (Assets.exists(pathToLoad))
-		#end
-		{
-			luaFilesCheck(pathToLoad);
-		}
-	}
-
-	static function luaFilesCheck(path:String)
-	{
-		var input:String = File.getContent(path);	
-
-		if (StringTools.fastCodeAt(input, 0) == 0xFEFF) {
-			input = input.substr(1);
-		} //防止BOM字符 <UTF-8 with BOM> <\65279>
-
-		var parser = new LuaParser();
-		var e:LuaExpr = parser.parseFromString(input);
-
-		if (e == null)
-			return;
-	
-		ScriptExprTools.lua_searchCallback(e, function(e:LuaExpr, params:Array<LuaExpr>) {
-			switch(e.expr) {
-				case EIdent('makeLuaSprite'):
-					if (ScriptExprTools.lua_getValue(params[1]) != null || ScriptExprTools.lua_getValue(params[1]) != '')
-						putPreload(imagesToPrepare, Std.string(ScriptExprTools.lua_getValue(params[1])));
-				case EIdent('makeAnimatedLuaSprite'):
-					if (ScriptExprTools.lua_getValue(params[1]) != null || ScriptExprTools.lua_getValue(params[1]) != '')
-							putPreload(imagesToPrepare, Std.string(ScriptExprTools.lua_getValue(params[1])));
-				case EIdent('precacheImage'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							putPreload(imagesToPrepare, Std.string(ScriptExprTools.lua_getValue(params[0])));
-				case EIdent('addCharacterToList'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							putPreload(imagesToPrepare, Std.string(ScriptExprTools.lua_getValue(params[0])));
-
-				////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-				case EIdent('precacheSound'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							putPreload(soundsToPrepare, Std.string(ScriptExprTools.lua_getValue(params[0])));
-				case EIdent('precacheMusic'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							putPreload(musicToPrepare, Std.string(ScriptExprTools.lua_getValue(params[0])));
-
-				case EIdent('playSound'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							putPreload(soundsToPrepare, Std.string(ScriptExprTools.lua_getValue(params[0])));
-				case EIdent('playMusic'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							putPreload(musicToPrepare, Std.string(ScriptExprTools.lua_getValue(params[0])));
-
-				////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-				case EIdent('addLuaScript'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							startLuaNamed(Std.string(ScriptExprTools.lua_getValue(params[0])));
-
-				case EIdent('runHaxeCode'):
-					if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '')
-							hscriptFilesCheck(Std.string(ScriptExprTools.lua_getValue(params[0])), false);
-				case EIdent('startDialogue'):
-					if (PlayState.isStoryMode)  {
-						if (ScriptExprTools.lua_getValue(params[0]) != null || ScriptExprTools.lua_getValue(params[0]) != '') {
-							var dialogueFile = Std.string(ScriptExprTools.lua_getValue(params[0]));
-							var path:String;
-							#if MODS_ALLOWED
-							path = Paths.modsJson(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
-							if (!FileSystem.exists(path))
-							#end
-							path = Paths.json(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
-
-							#if MODS_ALLOWED
-							if (FileSystem.exists(path))
-							#else
-							if (Assets.exists(path))
-							#end
-							{
-								var dialogueList:DialogueFile = DialogueBoxPsych.parseDialogue(path);
-								for (i in 0...dialogueList.dialogue.length)							
-									if (dialogueList.dialogue[i] != null) {							
-										putPreload(imagesToPrepare, 'dialogue/' + Std.string(dialogueList.dialogue[i].portrait));		
-										putPreload(soundsToPrepare, Std.string(dialogueList.dialogue[i].sound));		
-									}														
-							}
-						}
-						if (ScriptExprTools.lua_getValue(params[1]) != null || ScriptExprTools.lua_getValue(params[1]) != '') {
-							putPreload(musicToPrepare, Std.string(ScriptExprTools.lua_getValue(params[1])));
-						}
-					}
-				case _:
-			}
-		});
-	}
-
-	static function startHscriptNamed(filePath:String)
-	{
-		#if MODS_ALLOWED
-		var pathToLoad:String = Paths.modFolders(filePath);
-		if (!FileSystem.exists(pathToLoad))
-			pathToLoad = Paths.getSharedPath(filePath);
-
-		if (FileSystem.exists(pathToLoad))
-		#else
-		var pathToLoad:String = Paths.getSharedPath(filePath);
-		if (Assets.exists(pathToLoad))
-		#end
-		{
-			hscriptFilesCheck(pathToLoad);
-		}
-	}
-
-	static function hscriptFilesCheck(file:String, isFile:Bool = true)
-	{
-		var input:String = '';
-		if (isFile){
-			File.getContent(file);	
-			//trace('Hscript: load Path: ' + file);
-		} else {
-			input = file;
-		}
-
-		if (StringTools.fastCodeAt(input, 0) == 0xFEFF) {
-			input = input.substr(1);
-		} //防止BOM字符 <UTF-8 with BOM> <\65279>
-
-		var parser = new Parser();
-		parser.allowTypes = parser.allowMetadata = parser.allowJSON = true;
-		var e:Expr = parser.parseString(input);
-
-		ScriptExprTools.hx_searchCallback(e, function(e:Expr, params:Array<Expr>) {
-			switch(Tools.expr(e)) {
-				case EField(e, f, _):
-					ScriptExprTools.hx_recursion(e, function(e:Expr) {
-						switch(Tools.expr(e)) {
-							case EIdent("Paths") if(f == "image"):
-								if (ScriptExprTools.hx_getValue(params[0]) != null || ScriptExprTools.hx_getValue(params[0]) != '')
-									putPreload(imagesToPrepare, Std.string(ScriptExprTools.hx_getValue(params[0])));
-							case EIdent("Paths") if(f == "cacheBitmap"):
-								if (ScriptExprTools.hx_getValue(params[0]) != null || ScriptExprTools.hx_getValue(params[0]) != '')
-									putPreload(imagesToPrepare, Std.string(ScriptExprTools.hx_getValue(params[0])));
-							case EIdent("Paths") if(f == "sound"):
-								if (ScriptExprTools.hx_getValue(params[0]) != null || ScriptExprTools.hx_getValue(params[0]) != '')
-									putPreload(soundsToPrepare, Std.string(ScriptExprTools.hx_getValue(params[0])));
-							case EIdent("Paths") if(f == "music"):
-								if (ScriptExprTools.hx_getValue(params[0]) != null || ScriptExprTools.hx_getValue(params[0]) != '')
-									putPreload(musicToPrepare, Std.string(ScriptExprTools.hx_getValue(params[0])));
-							case _:
-						}
-					});
-				case _:
-			}
-		});
 	}
 
 	//上面为数据准备部分
@@ -694,9 +263,6 @@ class LoadingState extends MusicBeatState
 		super.update(elapsed);
 
 		loads.angle += 1.5;
-		
-		if (waitPrepare) 
-			return;
 
 		if (curPercent != intendedPercent)
 		{
@@ -704,27 +270,7 @@ class LoadingState extends MusicBeatState
 				curPercent = intendedPercent;
 			else
 				curPercent = FlxMath.lerp(intendedPercent, curPercent, Math.exp(-elapsed * 15));
-
-			bar.scale.x = button.width / 2 + (FlxG.width - button.width) * curPercent;
-			button.x = FlxG.width * curPercent - button.width * curPercent;
-			bar.updateHitbox();
-			button.updateHitbox();
-			var precent:Float = Math.floor(curPercent * 10000) / 100;
-			if (precent % 1 == 0)
-				precentText.text = precent + '.00%';
-			else if ((precent * 10) % 1 == 0)
-				precentText.text = precent + '0%';
-			else
-				precentText.text = precent + '%'; // 修复显示问题
 		};
-
-		// intendedPercent 由 loaded 的 set 方法驱动更新
-
-		if (curPercent == 1)
-		{
-			onLoad();
-			return;
-		}
 	}
 
 	function onLoad() //加载完毕进行跳转
@@ -767,23 +313,16 @@ class LoadingState extends MusicBeatState
 		}
 	}
 
-	static function checkLoaded():Bool
+	function checkLoaded():Bool
 	{
-		for (key => bitmap in requestedBitmaps)
-		{
-			if (bitmap != null && Paths.cacheBitmap(key, bitmap, false) != null) {
-				trace('IMAGE: finished preloading image $key');
-			} else
-				trace('IMAGE: failed to cache image $key');
-		}
 		return (loaded == loadMax);
 	}
 
-	public static function startThreads()
+	public function startThreads()
 	{
 		clearInvalids();
+		loadMax = imagesToPrepare.length * 2 + soundsToPrepare.length + musicToPrepare.length + songsToPrepare.length;
 		loaded = 0;
-		loadMax = imagesToPrepare.length + soundsToPrepare.length + musicToPrepare.length + songsToPrepare.length;
 
 		//trace('LoadingState: startThreads, loadMax: $loadMax');
 		loadThread = new ThreadPool(ClientPrefs.data.loadThreads, ClientPrefs.data.loadThreads, MULTI_THREADED);
@@ -848,13 +387,18 @@ class LoadingState extends MusicBeatState
 		};
 	}
 
-	static function threadInit():Void {
+	function threadInit():Void {
 		loadThread.onComplete.add(function(msg:{type:String, path:String, file:Dynamic, alreadyLoaded:Bool, error:Dynamic}) {
 			switch (msg.type) {
 				case 'sound', 'song', 'music':
 					trace(msg.type.toUpperCase() + ': finished preloading ' + msg.path);
 				case 'image':
-					if (!msg.alreadyLoaded) requestedBitmaps.set(msg.path, msg.file);
+					if (!msg.alreadyLoaded) {
+						requestedBitmaps.set(msg.path, msg.file);
+						TextureQueue.cacheBitmap(msg.path, msg.file);
+					} else {
+						addLoadCount();
+					}
 			}
 			addLoadCount();
 		});
@@ -873,7 +417,7 @@ class LoadingState extends MusicBeatState
 		});
 	}
 
-	static function threadWork(func:Void->Dynamic):Void {
+	function threadWork(func:Void->Dynamic):Void {
 		loadThread.run(sendThreadData, {func: func});
 	}
 
@@ -908,17 +452,17 @@ class LoadingState extends MusicBeatState
 
 	///////////////////////////////////////////////////////////////////////////////
 
-	static function addLoadCount() {
+	public function addLoadCount() {
 		loaded++;
 	}
 
-	static function putPreload(tar:Dynamic, file:String) {
+	public function putPreload(tar:Dynamic, file:String) {
 		if (!tar.contains(file)) tar.push(file);
 	}
 
 	//////////////////////////////////////////////
 
-	public static function clearInvalids()
+	public function clearInvalids()
 	{
 		clearInvalidFrom(imagesToPrepare, 'images', '.png', IMAGE);
 		clearInvalidFrom(soundsToPrepare, 'sounds', '.${Paths.SOUND_EXT}', SOUND);
@@ -930,7 +474,7 @@ class LoadingState extends MusicBeatState
 				arr.remove(null);
 	}
 
-	static function clearInvalidFrom(arr:Array<String>, prefix:String, ext:String, type:AssetType, ?library:String = null)
+	function clearInvalidFrom(arr:Array<String>, prefix:String, ext:String, type:AssetType, ?library:String = null)
 	{
 		for (i in 0...arr.length)
 		{
@@ -966,24 +510,3 @@ class LoadingState extends MusicBeatState
 
 	
 }
-
-class LoadButton extends FlxSprite
-{
-	public function new(x:Float, y:Float, Width:Int, Height:Int)
-	{
-		super(x, y);
-		makeGraphic(Width, Height, 0x00);
-
-		var shape:Shape = new Shape();
-		shape.graphics.beginFill(color);
-		shape.graphics.drawRoundRect(0, 0, Width, Height, Std.int(Height / 1), Std.int(Height / 1));
-		shape.graphics.endFill();
-
-		var BitmapData:BitmapData = new BitmapData(Width, Height, 0x00);
-		BitmapData.draw(shape);
-
-		pixels = BitmapData;
-		setGraphicSize(Width, Height);
-	}
-}
-
