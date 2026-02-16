@@ -386,9 +386,7 @@ class PsychUIInputText extends FlxSpriteGroup
 				}
 				if (_nextAccent != NONE)
 					charCode += grave - capital + _nextAccent;
-				var _txtEnabled:Bool = false;
-				try { _txtEnabled = FlxG.stage.window.textInputEnabled; } catch (e:Dynamic) {}
-				if (_txtEnabled) return;
+				if (_isTextInputEnabled()) return;
 				_typeLetter(charCode);
 				_nextAccent = NONE;
 
@@ -412,9 +410,7 @@ class PsychUIInputText extends FlxSpriteGroup
 					charCode += grave - capital + _nextAccent;
 				else if (_nextAccent == TILDE) // Unsupported accent
 					_typeLetter(getAccentCharCode(_nextAccent));
-				var _txtEnabled2:Bool = false;
-				try { _txtEnabled2 = FlxG.stage.window.textInputEnabled; } catch (e:Dynamic) {}
-				if (_txtEnabled2) return;
+				if (_isTextInputEnabled()) return;
 				_typeLetter(charCode);
 				_nextAccent = NONE;
 
@@ -423,9 +419,7 @@ class PsychUIInputText extends FlxSpriteGroup
 					charCode += 0xD1 - 0x4E;
 				else
 					_typeLetter(getAccentCharCode(_nextAccent));
-				var _txtEnabled3:Bool = false;
-				try { _txtEnabled3 = FlxG.stage.window.textInputEnabled; } catch (e:Dynamic) {}
-				if (_txtEnabled3) return;
+				if (_isTextInputEnabled()) return;
 				_typeLetter(charCode);
 				_nextAccent = NONE;
 
@@ -438,9 +432,7 @@ class PsychUIInputText extends FlxSpriteGroup
 			default:
 				if (_composing)
 					return;
-				var _txtEnabled4:Bool = false;
-				try { _txtEnabled4 = FlxG.stage.window.textInputEnabled; } catch (e:Dynamic) {}
-				if (_txtEnabled4) return;
+				if (_isTextInputEnabled()) return;
 				if (charCode < 1)
 					if ((charCode = getAccentCharCode(_nextAccent)) < 1)
 						return;
@@ -752,34 +744,58 @@ class PsychUIInputText extends FlxSpriteGroup
 		super.destroy();
 	}
 
-	inline function _safeEnableTextInput():Void {
-		var win = FlxG.stage.window;
+	private inline function _getWindow():Dynamic {
+		var w:Dynamic = null;
 		try {
-			FlxG.stage.window.textInputEnabled = true;
+			#if lime
+			w = (Lib.application != null) ? Lib.application.window : null;
+			#end
+			if (w == null && Reflect.hasField(FlxG.stage, "window")) {
+				w = Reflect.field(FlxG.stage, "window");
+			}
+		} catch (e:Dynamic) {}
+		return w;
+	}
+
+	private inline function _isTextInputEnabled():Bool {
+		var win:Dynamic = _getWindow();
+		if (win == null) return false;
+		var enabled:Bool = false;
+		try { enabled = win.textInputEnabled; } catch (e:Dynamic) {}
+		return enabled;
+	}
+
+	inline function _safeEnableTextInput():Void {
+		var win:Dynamic = _getWindow();
+		if (win == null) return;
+		try {
+			win.textInputEnabled = true;
 		} catch (e:Dynamic) {}
 	}
 
 	inline function _safeDisableTextInput():Void {
-		var win = Lib.application.window;
+		var win:Dynamic = _getWindow();
+		if (win == null) return;
 		try {
-				FlxG.stage.window.textInputEnabled = false;
+			win.textInputEnabled = false;
 		} catch (e:Dynamic) {}
 	}
 
-inline function _updateTextInputRect():Void {
-    var win = Lib.application.window;
-    try {
-            var p = behindText.getScreenPosition(camera);
-            var cx:Int = Std.int(p.x);
-            if (caret != null)
-            {
-                var cpos = caret.getScreenPosition(camera);
-                cx = Std.int(cpos.x);
-            }
-            var rect = new Rectangle(cx, Std.int(p.y + behindText.height), Std.int(behindText.width), Std.int(behindText.height));
-            win.setTextInputRect(rect);
-    }
-}
+	inline function _updateTextInputRect():Void {
+		var win:Dynamic = _getWindow();
+		if (win == null) return;
+		try {
+			var p = behindText.getScreenPosition(camera);
+			var cx:Int = Std.int(p.x);
+			if (caret != null)
+			{
+				var cpos = caret.getScreenPosition(camera);
+				cx = Std.int(cpos.x);
+			}
+			var rect = new Rectangle(cx, Std.int(p.y + behindText.height), Std.int(behindText.width), Std.int(behindText.height));
+			win.setTextInputRect(rect);
+		} catch (e:Dynamic) {}
+	}
 
 	function set_caretIndex(v:Int)
 	{

@@ -81,7 +81,7 @@ class StrumNote extends FlxSprite
 		if (Note.loadedNote.get(Note.getLoadDataKey(Note.defaultNoteSkin, '')) == null || Note.loadedNote.get(Note.getLoadDataKey(Note.defaultNoteSkin, '')).skin == null)
 			Note.init();
 
-		skin = pixelPath + Note.loadedNote.get(Note.getLoadDataKey(Note.defaultNoteSkin, '')).skin;
+		skin = pixelPath + Note.loadedNote.get(Note.getLoadDataKey(Note.defaultNoteSkin, '')).skin + Note.loadedNote.get(Note.getLoadDataKey(Note.defaultNoteSkin, '')).skinPostfix;
 			
 		texture = skin; // Load texture and anims
 		scrollFactor.set();

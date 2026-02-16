@@ -361,7 +361,6 @@ class PlayState extends MusicBeatState
 	{
 		Paths.clearStoredMemory();
 		GCManager.enable(false);
-		Note.init();
 		
 		startCallback = startCountdown;
 		endCallback = endSong;
@@ -1578,8 +1577,10 @@ class PlayState extends MusicBeatState
 		};
 		pausedTimePos = time;
         Conductor.songPosition = time;
-        if (timing != null) timing.setPosition(time);
-		if (timing != null && !paused) timing.play();
+        if (timing != null) {
+			timing.setPosition(time);
+		    timing.play();
+		}
 	}
 
 	public function startNextDialogue()
@@ -1744,6 +1745,8 @@ class PlayState extends MusicBeatState
 		catch (e:Dynamic)
 		{
 		}
+
+		Note.init();
 
 		for (section in songData.notes)
 		{
@@ -2173,6 +2176,7 @@ class PlayState extends MusicBeatState
 
 	override function openSubState(SubState:FlxSubState)
 	{
+		stagesFunc(function(stage:BaseStage) stage.openSubState(SubState));
 		if (paused)
 		{
 			if (FlxG.sound.music != null)
@@ -2190,7 +2194,6 @@ class PlayState extends MusicBeatState
 			FlxTween.globalManager.forEach(function(twn:FlxTween) if (!twn.finished)
 				twn.active = false);
 		}
-		stagesFunc(function(stage:BaseStage) stage.openSubState(SubState));
 
 		super.openSubState(SubState);
 	}
@@ -4209,6 +4212,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		noteMissCommon(direction);
 		FlxG.sound.play(Paths.soundRandom('missnote', 1, 3), FlxG.random.float(0.1, 0.2));
+		stagesFunc(function(stage:BaseStage) stage.noteMissPress(direction));
 		callOnScripts('noteMissPress', [direction]);
 	}
 
