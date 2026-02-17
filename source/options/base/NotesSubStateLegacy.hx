@@ -14,7 +14,7 @@ import flixel.graphics.FlxGraphic;
 
 import shaders.ColorSwap;
 
-import game.funkin.objects.Note;
+import games.funkin.objects.Note;
 
 class NotesSubStateLegacy extends MusicBeatSubstate
 {

@@ -17,8 +17,8 @@ import backend.PsychCamera;
 import scripts.LuaUtils;
 import scripts.ModchartSprite;
 
-import game.funkin.objects.Character;
-import game.funkin.backend.StageData;
+import games.funkin.objects.Character;
+import games.funkin.backend.StageData;
 
 class StageEditorState extends MusicBeatState implements PsychUIEventHandler.PsychUIEvent
 {

@@ -2,9 +2,9 @@
 
 import flixel.FlxSubState;
 
-import game.funkin.backend.WeekData;
-import game.funkin.backend.Highscore;
-import game.funkin.objects.HealthIcon;
+import games.funkin.backend.WeekData;
+import games.funkin.backend.Highscore;
+import games.funkin.objects.HealthIcon;
 
 class ResetScoreSubState extends MusicBeatSubstate
 {

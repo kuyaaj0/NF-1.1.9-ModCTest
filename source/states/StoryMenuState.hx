@@ -11,9 +11,9 @@ import objects.MenuCharacter;
 import substates.GameplayChangersSubstate;
 import substates.ResetScoreSubState;
 
-import game.funkin.backend.WeekData;
-import game.funkin.backend.Highscore;
-import game.funkin.backend.Song;
+import games.funkin.backend.WeekData;
+import games.funkin.backend.Highscore;
+import games.funkin.backend.Song;
 
 class StoryMenuState extends MusicBeatState
 {

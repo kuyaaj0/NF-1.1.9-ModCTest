@@ -32,9 +32,9 @@ import objects.state.ResultShape;
 import states.freeplayState.FreeplayState;
 import states.MainMenuState;
 
-import game.funkin.backend.Highscore;
-import game.funkin.backend.diffCalc.DiffCalc;
-import game.funkin.backend.Song;
+import games.funkin.backend.Highscore;
+import games.funkin.backend.diffCalc.DiffCalc;
+import games.funkin.backend.Song;
 
 class ResultsScreen extends MusicBeatSubstate
 {

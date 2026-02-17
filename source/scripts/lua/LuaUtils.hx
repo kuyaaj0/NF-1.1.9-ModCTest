@@ -6,8 +6,8 @@ import openfl.display.BlendMode;
 
 import substates.GameOverSubstate;
 
-import game.funkin.backend.WeekData;
-import game.funkin.objects.Character;
+import games.funkin.backend.WeekData;
+import games.funkin.objects.Character;
 
 typedef LuaTweenOptions =
 {

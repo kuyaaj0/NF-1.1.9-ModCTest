@@ -2,11 +2,11 @@
 
 import flixel.addons.display.shapes.FlxShapeCircle;
 
-import game.funkin.backend.StageData;
-import game.funkin.objects.Character;
-import game.funkin.objects.Bar;
-import game.funkin.objects.KeyboardViewer;
-import game.funkin.stages.StageWeek1 as BackgroundStage;
+import games.funkin.backend.StageData;
+import games.funkin.objects.Character;
+import games.funkin.objects.Bar;
+import games.funkin.objects.KeyboardViewer;
+import games.funkin.stages.StageWeek1 as BackgroundStage;
 
 class NoteOffsetState extends MusicBeatState
 {

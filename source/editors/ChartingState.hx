@@ -33,14 +33,14 @@ import objects.AttachedSprite;
 
 import substates.Prompt;
 
-import game.funkin.backend.Song;
-import game.funkin.backend.Section;
-import game.funkin.backend.StageData;
-import game.funkin.objects.Note;
-import game.funkin.objects.StrumNote;
-import game.funkin.objects.NoteSplash;
-import game.funkin.objects.HealthIcon;
-import game.funkin.objects.Character;
+import games.funkin.backend.Song;
+import games.funkin.backend.Section;
+import games.funkin.backend.StageData;
+import games.funkin.objects.Note;
+import games.funkin.objects.StrumNote;
+import games.funkin.objects.NoteSplash;
+import games.funkin.objects.HealthIcon;
+import games.funkin.objects.Character;
 
 @:access(flixel.sound.FlxSound._sound)
 @:access(openfl.media.Sound.__buffer)
@@ -2631,7 +2631,7 @@ class ChartingState extends MusicBeatState
 	override function destroy()
 	{
 		Note.globalRgbShaders = [];
-		game.funkin.backend.NoteTypesConfig.clearNoteTypesData();
+		games.funkin.backend.NoteTypesConfig.clearNoteTypesData();
 		super.destroy();
 	}
 

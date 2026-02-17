@@ -23,8 +23,8 @@ import scripts.init.InitScriptData;
 
 import shaders.ColorblindFilter;
 
-import game.funkin.backend.WeekData;
-import game.funkin.backend.Highscore;
+import games.funkin.backend.WeekData;
+import games.funkin.backend.Highscore;
 
 #if mobile
 import mobile.states.CopyState;

@@ -15,7 +15,7 @@ import objects.AttachedSprite;
 
 import options.base.ModSettingsSubState;
 
-import game.funkin.backend.WeekData;
+import games.funkin.backend.WeekData;
 
 class ModsMenuState extends MusicBeatState
 {

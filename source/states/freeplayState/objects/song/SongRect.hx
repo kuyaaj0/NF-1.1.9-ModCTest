@@ -1,6 +1,6 @@
 package states.freeplayState.objects.song;
 
-import game.funkin.objects.HealthIcon;
+import games.funkin.objects.HealthIcon;
 
 class SongRect extends FlxSpriteGroup {
 

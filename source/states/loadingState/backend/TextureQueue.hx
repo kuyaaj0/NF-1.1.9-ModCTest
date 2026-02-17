@@ -27,11 +27,12 @@ class TextureQueue
         var newGraphic:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, file);
         newGraphic.persist = true;
         newGraphic.destroyOnNoUse = false;
-        newGraphic.bitmap.getTextureAsync(FlxG.stage.context3D, endCallback, #if mobile 256 #else 512 #end);
+        newGraphic.bitmap.getTexture(FlxG.stage.context3D);
         Cache.currentTrackedAssets.set(file, newGraphic);
+        endCallback();
 	}
 
-    static function endCallback(texture:TextureBase):Void
+    static function endCallback():Void
     {
         isLoading = false;
         if (LoadingState.instance != null)
