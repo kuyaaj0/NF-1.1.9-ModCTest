@@ -265,7 +265,7 @@ class PlayState extends MusicBeatState
 	public var cpuControlled:Bool = false;
 	public var cpuControlled_opponent:Bool = false;
 	public var practiceMode:Bool = false;
-
+	
 	public static var replayMode:Bool = false;
 	public var replayExam:Replay;
 
@@ -408,11 +408,10 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.data.playOpponent)
 			cpuControlled = ClientPrefs.data.botOpponentFix;
 
-		replayExam = new Replay(PlayState);
-		if (!replayMode)
-			replayExam.reset();
-		else
-			replayExam.init();
+		replayExam = new Replay();
+		add(replayExam);
+		//if (!replayMode)
+			
 
 		camGame = initPsychCamera();
 		camHUD = new FlxCamera();
@@ -2555,7 +2554,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		{
 			if (!inCutscene)
 			{
-				replayExam.keysCheck();
 				if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled)
 					keysCheck();
 				else
@@ -2854,10 +2852,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		for (key in 0...keysArray.length)
 		{
-			if (controls.pressed(keysArray[key]))
-				replayExam.pauseCheck(Conductor.songPosition, key);
-			else
-				replayExam.pauseCheck(-9999, key);
+			//待修改
 			// 暂停时候回放数据的保存，防止出现错误;
 		}
 		openSubState(new PauseSubState());
@@ -3436,8 +3431,31 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 						NoteTime, NoteMs
 					]
 				];
-				Highscore.saveGameData(SONG.song, storyDifficulty, details, replayExam.hitData);
-				replayExam.saveDetails(details);
+				Highscore.saveGameData(SONG.song, storyDifficulty, details, null);
+				
+				var record:games.funkin.backend.Replay.StateRecord = {
+					songName: songName,
+					songLength: songLength,
+					playDate: Date.now().toString(),
+					songSpeed: songSpeed,
+					playbackRate: playbackRate,
+					healthGain: healthGain,
+					healthLoss: healthLoss,
+					cpuControlled: cpuControlled,
+					practiceMode: practiceMode,
+					instakillOnMiss: instakillOnMiss,
+					playOpponent: ClientPrefs.data.playOpponent,
+					flipChart: ClientPrefs.data.flipChart,
+					songScore: songScore,
+					ratingPercent: ratingPercent,
+					ratingFC: ratingFC,
+					songHits: songHits,
+					highestCombo: highestCombo,
+					songMisses: songMisses,
+					hitMapTime: NoteTime,
+					hitMapMs: NoteMs
+				};
+				replayExam.savePlayRecord(record);
 			}
 			#end
 			playbackRate = 1;
@@ -3886,9 +3904,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		keyboardViewer.pressed(key);
 
-		replayExam.push(Conductor.songPosition, key, 1);
-		// 回放数据的保存
-
 		// had to name it like this else it'd break older scripts lol
 		var ret:Dynamic = callOnScripts('preKeyPress', [key], true);
 
@@ -4051,9 +4066,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled && startedCountdown && !paused)
 		{
 			keyboardViewer.released(key);
-
-			replayExam.push(Conductor.songPosition, key, 0);
-			// 回放数据的保存
 
 			var spr:StrumNote = ClientPrefs.data.playOpponent ? opponentStrums.members[key] : playerStrums.members[key];
 			if (spr != null)

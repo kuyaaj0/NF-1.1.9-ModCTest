@@ -320,13 +320,20 @@ class LoadingState extends MusicBeatState
 
 	function checkLoaded():Bool
 	{
+		for (key => bitmap in requestedBitmaps)
+		{
+			if (bitmap != null && Paths.cacheBitmap(key, bitmap, false) != null) {
+				trace('IMAGE: finished preloading image $key');
+			} else
+				trace('IMAGE: failed to cache image $key');
+		}
 		return (loaded == loadMax);
 	}
 
 	public function startThreads()
 	{
 		clearInvalids();
-		loadMax = imagesToPrepare.length * 2 + soundsToPrepare.length + musicToPrepare.length + songsToPrepare.length;
+		loadMax = imagesToPrepare.length + soundsToPrepare.length + musicToPrepare.length + songsToPrepare.length;
 		loaded = 0;
 
 		//trace('LoadingState: startThreads, loadMax: $loadMax');
@@ -398,12 +405,7 @@ class LoadingState extends MusicBeatState
 				case 'sound', 'song', 'music':
 					trace(msg.type.toUpperCase() + ': finished preloading ' + msg.path);
 				case 'image':
-					if (!msg.alreadyLoaded) {
-						requestedBitmaps.set(msg.path, msg.file);
-						TextureQueue.cacheBitmap(msg.path, msg.file);
-					} else {
-						addLoadCount();
-					}
+					if (!msg.alreadyLoaded) requestedBitmaps.set(msg.path, msg.file);
 			}
 			addLoadCount();
 		});
