@@ -11,88 +11,106 @@ class InputFormatter
 	{
 		switch (key)
 		{
-			case BACKSPACE:
-				return "BckSpc";
-			case CONTROL:
-				return "Ctrl";
-			case ALT:
-				return "Alt";
-			case CAPSLOCK:
-				return "Caps";
-			case PAGEUP:
-				return "PgUp";
-			case PAGEDOWN:
-				return "PgDown";
-			case ZERO:
-				return "0";
-			case ONE:
-				return "1";
-			case TWO:
-				return "2";
-			case THREE:
-				return "3";
-			case FOUR:
-				return "4";
-			case FIVE:
-				return "5";
-			case SIX:
-				return "6";
-			case SEVEN:
-				return "7";
-			case EIGHT:
-				return "8";
-			case NINE:
-				return "9";
-			case NUMPADZERO:
-				return "#0";
-			case NUMPADONE:
-				return "#1";
-			case NUMPADTWO:
-				return "#2";
-			case NUMPADTHREE:
-				return "#3";
-			case NUMPADFOUR:
-				return "#4";
-			case NUMPADFIVE:
-				return "#5";
-			case NUMPADSIX:
-				return "#6";
-			case NUMPADSEVEN:
-				return "#7";
-			case NUMPADEIGHT:
-				return "#8";
-			case NUMPADNINE:
-				return "#9";
-			case NUMPADMULTIPLY:
-				return "#*";
-			case NUMPADPLUS:
-				return "#+";
-			case NUMPADMINUS:
-				return "#-";
-			case NUMPADPERIOD:
-				return "#.";
-			case SEMICOLON:
-				return ";";
-			case COMMA:
-				return ",";
-			case PERIOD:
-				return ".";
-			// case SLASH:
-			//	return "/";
-			case GRAVEACCENT:
-				return "`";
-			case LBRACKET:
-				return "[";
-			// case BACKSLASH:
-			//	return "\\";
-			case RBRACKET:
-				return "]";
-			case QUOTE:
-				return "'";
-			case PRINTSCREEN:
-				return "PrtScrn";
-			case NONE:
-				return '---';
+			case NONE: return "---";
+			case A: return "A";
+			case B: return "B";
+			case C: return "C";
+			case D: return "D";
+			case E: return "E";
+			case F: return "F";
+			case G: return "G";
+			case H: return "H";
+			case I: return "I";
+			case J: return "J";
+			case K: return "K";
+			case L: return "L";
+			case M: return "M";
+			case N: return "N";
+			case O: return "O";
+			case P: return "P";
+			case Q: return "Q";
+			case R: return "R";
+			case S: return "S";
+			case T: return "T";
+			case U: return "U";
+			case V: return "V";
+			case W: return "W";
+			case X: return "X";
+			case Y: return "Y";
+			case Z: return "Z";
+			case ZERO: return "0";
+			case ONE: return "1";
+			case TWO: return "2";
+			case THREE: return "3";
+			case FOUR: return "4";
+			case FIVE: return "5";
+			case SIX: return "6";
+			case SEVEN: return "7";
+			case EIGHT: return "8";
+			case NINE: return "9";
+			case PAGEUP: return "PgUp";
+			case PAGEDOWN: return "PgDown";
+			case HOME: return "Home";
+			case END: return "End";
+			case INSERT: return "Ins";
+			case ESCAPE: return "Esc";
+			case MINUS: return "-";
+			case PLUS: return "+";
+			case DELETE: return "Del";
+			case BACKSPACE: return "BckSpc";
+			case LBRACKET: return "[";
+			case RBRACKET: return "]";
+			case BACKSLASH: return "\\";
+			case CAPSLOCK: return "Caps";
+			case SCROLL_LOCK: return "ScrLk";
+			case NUMLOCK: return "NumLk";
+			case SEMICOLON: return ";";
+			case QUOTE: return "'";
+			case ENTER: return "Enter";
+			case SHIFT: return "Shift";
+			case COMMA: return ",";
+			case PERIOD: return ".";
+			case SLASH: return "/";
+			case GRAVEACCENT: return "`";
+			case CONTROL: return "Ctrl";
+			case ALT: return "Alt";
+			case SPACE: return "Space";
+			case UP: return "Up";
+			case DOWN: return "Down";
+			case LEFT: return "Left";
+			case RIGHT: return "Right";
+			case TAB: return "Tab";
+			case WINDOWS: return "Win";
+			case MENU: return "Menu";
+			case PRINTSCREEN: return "PrtScrn";
+			case BREAK: return "Break";
+			case F1: return "F1";
+			case F2: return "F2";
+			case F3: return "F3";
+			case F4: return "F4";
+			case F5: return "F5";
+			case F6: return "F6";
+			case F7: return "F7";
+			case F8: return "F8";
+			case F9: return "F9";
+			case F10: return "F10";
+			case F11: return "F11";
+			case F12: return "F12";
+			case NUMPADZERO: return "#0";
+			case NUMPADONE: return "#1";
+			case NUMPADTWO: return "#2";
+			case NUMPADTHREE: return "#3";
+			case NUMPADFOUR: return "#4";
+			case NUMPADFIVE: return "#5";
+			case NUMPADSIX: return "#6";
+			case NUMPADSEVEN: return "#7";
+			case NUMPADEIGHT: return "#8";
+			case NUMPADNINE: return "#9";
+			case NUMPADMINUS: return "#-";
+			case NUMPADPLUS: return "#+";
+			case NUMPADPERIOD: return "#.";
+			case NUMPADMULTIPLY: return "#*";
+			case NUMPADSLASH: return "#/";
 			default:
 				var label:String = Std.string(key);
 				if (label.toLowerCase() == 'null')
@@ -102,6 +120,114 @@ class InputFormatter
 				for (i in 0...arr.length)
 					arr[i] = CoolUtil.capitalize(arr[i]);
 				return arr.join(' ');
+		}
+	}
+
+	public static function getFlxKey(name:String):FlxKey
+	{
+		switch (name)
+		{
+			case "---": return NONE;
+			case "A": return A;
+			case "B": return B;
+			case "C": return C;
+			case "D": return D;
+			case "E": return E;
+			case "F": return F;
+			case "G": return G;
+			case "H": return H;
+			case "I": return I;
+			case "J": return J;
+			case "K": return K;
+			case "L": return L;
+			case "M": return M;
+			case "N": return N;
+			case "O": return O;
+			case "P": return P;
+			case "Q": return Q;
+			case "R": return R;
+			case "S": return S;
+			case "T": return T;
+			case "U": return U;
+			case "V": return V;
+			case "W": return W;
+			case "X": return X;
+			case "Y": return Y;
+			case "Z": return Z;
+			case "0": return ZERO;
+			case "1": return ONE;
+			case "2": return TWO;
+			case "3": return THREE;
+			case "4": return FOUR;
+			case "5": return FIVE;
+			case "6": return SIX;
+			case "7": return SEVEN;
+			case "8": return EIGHT;
+			case "9": return NINE;
+			case "PgUp": return PAGEUP;
+			case "PgDown": return PAGEDOWN;
+			case "Home": return HOME;
+			case "End": return END;
+			case "Ins": return INSERT;
+			case "Esc": return ESCAPE;
+			case "-": return MINUS;
+			case "+": return PLUS;
+			case "Del": return DELETE;
+			case "BckSpc": return BACKSPACE;
+			case "[": return LBRACKET;
+			case "]": return RBRACKET;
+			case "\\": return BACKSLASH;
+			case "Caps": return CAPSLOCK;
+			case "ScrLk": return SCROLL_LOCK;
+			case "NumLk": return NUMLOCK;
+			case ";": return SEMICOLON;
+			case "'": return QUOTE;
+			case "Enter": return ENTER;
+			case "Shift": return SHIFT;
+			case ",": return COMMA;
+			case ".": return PERIOD;
+			case "/": return SLASH;
+			case "`": return GRAVEACCENT;
+			case "Ctrl": return CONTROL;
+			case "Alt": return ALT;
+			case "Space": return SPACE;
+			case "Up": return UP;
+			case "Down": return DOWN;
+			case "Left": return LEFT;
+			case "Right": return RIGHT;
+			case "Tab": return TAB;
+			case "Win": return WINDOWS;
+			case "Menu": return MENU;
+			case "PrtScrn": return PRINTSCREEN;
+			case "Break": return BREAK;
+			case "F1": return F1;
+			case "F2": return F2;
+			case "F3": return F3;
+			case "F4": return F4;
+			case "F5": return F5;
+			case "F6": return F6;
+			case "F7": return F7;
+			case "F8": return F8;
+			case "F9": return F9;
+			case "F10": return F10;
+			case "F11": return F11;
+			case "F12": return F12;
+			case "#0": return NUMPADZERO;
+			case "#1": return NUMPADONE;
+			case "#2": return NUMPADTWO;
+			case "#3": return NUMPADTHREE;
+			case "#4": return NUMPADFOUR;
+			case "#5": return NUMPADFIVE;
+			case "#6": return NUMPADSIX;
+			case "#7": return NUMPADSEVEN;
+			case "#8": return NUMPADEIGHT;
+			case "#9": return NUMPADNINE;
+			case "#-": return NUMPADMINUS;
+			case "#+": return NUMPADPLUS;
+			case "#.": return NUMPADPERIOD;
+			case "#*": return NUMPADMULTIPLY;
+			case "#/": return NUMPADSLASH;
+			default: return FlxKey.fromString(name);
 		}
 	}
 
