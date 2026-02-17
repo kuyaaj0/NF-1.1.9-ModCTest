@@ -389,6 +389,8 @@ class CreditsSubState extends MusicBeatSubstate
 
 	override function update(elapsed:Float)
 	{
+		super.update(elapsed);
+
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
@@ -397,7 +399,7 @@ class CreditsSubState extends MusicBeatSubstate
 		mouseMove();
 		if (FlxG.mouse.x <= 230 && FlxG.mouse.y <= FlxG.height - 120)
 		{
-			position += FlxG.mouse.wheel * 70;
+			//position += FlxG.mouse.wheel * 70;
 			if (FlxG.mouse.pressed)
 			{
 				position += moveData;
@@ -423,11 +425,11 @@ class CreditsSubState extends MusicBeatSubstate
 				{
 					if (FlxG.mouse.justReleased && i != curSelected)
 					{
-						position += avgSpeed * (0.0166 / elapsed) * Math.pow(1.1, Math.abs(avgSpeed * 0.8));
-						if (Math.abs(avgSpeed * (0.0166 / elapsed)) < 1)
-						{
+						//position += avgSpeed * (0.0166 / elapsed) * Math.pow(1.1, Math.abs(avgSpeed * 0.8));
+						//if (Math.abs(avgSpeed * (0.0166 / elapsed)) < 1)
+						//{
 							changeSelection(i);
-						}
+						//}
 					}
 				}
 			}
@@ -449,8 +451,6 @@ class CreditsSubState extends MusicBeatSubstate
 		}
 
 		RectPosUpdate(false);
-
-		super.update(elapsed);
 	}
 
 	var saveMouseY:Int = 0;

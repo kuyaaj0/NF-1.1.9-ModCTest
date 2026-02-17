@@ -358,84 +358,83 @@ class CreditsState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		super.update(elapsed);
+
 		if (FlxG.sound.music.volume < 0.7)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 		}
 
 		mouseMove();
-		position += FlxG.mouse.wheel * 70;
+		//position += FlxG.mouse.wheel * 70;
 		if (FlxG.mouse.pressed)
 		{
 			position += moveData;
 			lerpPosition = position;
 			songsRectPosUpdate(true);
 		}
+
 		for (i in 0...ModListArray.length)
 		{
 			if (FlxG.mouse.overlaps(ModListArray[i]))
 			{
 				if (FlxG.mouse.justReleased)
 				{
-					position += avgSpeed * 1.5 * (0.0166 / elapsed) * Math.pow(1.1, Math.abs(avgSpeed * 0.8));
-					if (Math.abs(avgSpeed * (0.0166 / elapsed)) < 1)
-					{
-						creditsStuff = [];
+					creditsStuff = [];
 
-						if (i <= #if mobile 3 #else 2 #end)
+					if (i <= #if mobile 3 #else 2 #end)
+					{
+						noscreen = false;
+						for (eg in NucreditsStuff[i])
 						{
-							noscreen = false;
-							for (eg in NucreditsStuff[i])
+							if (eg[5] != null)
 							{
-								if (eg[5] != null)
+								psych = false;
+								if (eg[1] != null)
 								{
-									psych = false;
-									if (eg[1] != null)
-									{
-										creditsStuff.push(eg);
-									}
-								}
-								else
-								{
-									psych = true;
 									creditsStuff.push(eg);
 								}
 							}
+							else
+							{
+								psych = true;
+								creditsStuff.push(eg);
+							}
 						}
-						else
-						{
-							pushModCreditsToList(UncreditsStuff[i]);
-						}
+					}
+					else
+					{
+						pushModCreditsToList(UncreditsStuff[i]);
+					}
 
-						if (!noscreen)
+					if (!noscreen)
+					{
+						if (!psych)
 						{
-							if (!psych)
+							if (creditsStuff != null)
 							{
-								if (creditsStuff != null)
-								{
-									CreditsSubState.creditsStuff = creditsStuff;
-									persistentUpdate = false;
-									Mods.currentModDirectory = UncreditsStuff[i];
-									openSubState(new CreditsSubState());
-									trace("false");
-								}
-							}
-							else if (psych)
-							{
-								if (creditsStuff != null)
-								{
-									PsychCreditsSubState.creditsStuff = creditsStuff;
-									persistentUpdate = false;
-									Mods.currentModDirectory = UncreditsStuff[i];
-									openSubState(new PsychCreditsSubState());
-									trace("true");
-								}
+								CreditsSubState.creditsStuff = creditsStuff;
+								persistentUpdate = false;
+								Mods.currentModDirectory = UncreditsStuff[i];
+								openSubState(new CreditsSubState());
+								trace("false");
 							}
 						}
-						else if (noscreen)
+						else if (psych)
 						{
-							FlxG.sound.play(Paths.sound('cancelMenu'));
+							if (creditsStuff != null)
+							{
+								PsychCreditsSubState.creditsStuff = creditsStuff;
+								persistentUpdate = false;
+								Mods.currentModDirectory = UncreditsStuff[i];
+								openSubState(new PsychCreditsSubState());
+								trace("true");
+							}
 						}
+					}
+					else if (noscreen)
+					{
+						FlxG.sound.play(Paths.sound('cancelMenu'));
 					}
 				}
 			}
@@ -452,8 +451,6 @@ class CreditsState extends MusicBeatState
 			lerpPosition = FlxMath.lerp(position, lerpPosition, Math.exp(-elapsed * 15));
 
 		songsRectPosUpdate(false);
-
-		super.update(elapsed);
 	}
 
 	var saveMouseY:Int = 0;
