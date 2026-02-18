@@ -7,6 +7,7 @@ import haxe.crypto.padding.PKCS7;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;
 import haxe.crypto.Aes;
+import haxe.crypto.Md5;
 
 #if windows
 import trandom.Native;
@@ -100,5 +101,10 @@ class EncryptUtil {
         }
         return iv;
         #end
+    }
+
+    /////////////// MD5校验 \\\\\\\\\\\\\\\\
+    public static function md5Encrypt(data:String):String {
+        return Md5.encode(data);
     }
 }
