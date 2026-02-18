@@ -48,12 +48,14 @@ class FPSViewer extends Sprite
 		addEventListener(Event.ENTER_UPDATE, update);
 		addEventListener(Event.ENTER_FRAME, draw);
 	}
+
+	public var canPress:Bool = true;
 	
 	private function update(e:Event):Void
 	{
 		DataCalc.update();
 		
-		if (isPointInFPSCounter() && FlxG.mouse.justPressed)
+		if (isPointInFPSCounter() && FlxG.mouse.justPressed && canPress)
 		{
 			isHiding = !isHiding;
 			hide();

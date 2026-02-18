@@ -477,7 +477,7 @@ class MainMenuState extends MusicBeatState
 
 			if (FlxG.keys.justPressed.SHIFT)
 			{
-				MusicBeatState.switchState(new ServerConnectState());
+				MusicBeatState.switchState(new useless.editors.ChartingState());
 			}
 
 		}

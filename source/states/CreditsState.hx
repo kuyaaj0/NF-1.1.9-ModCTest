@@ -25,7 +25,7 @@ class CreditsState extends MusicBeatState
 			['NovaFlare Engine Team'],
 			[
 				'Beihu',
-				'Beihu',
+				'beihu',
 				'Main Programmer',
 				'Head of NovaFlare Engine\n\n\nNothing special',
 				'FFC0CB',
