@@ -265,9 +265,9 @@ class PlayState extends MusicBeatState
 	public var cpuControlled:Bool = false;
 	public var cpuControlled_opponent:Bool = false;
 	public var practiceMode:Bool = false;
-
+	
 	public static var replayMode:Bool = false;
-	public var replayExam:Replay;
+	private var replayExam:Replay;
 
 	public var txtSine:Float = 0;
 	public var botplayTxt:FlxText;
@@ -408,11 +408,9 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.data.playOpponent)
 			cpuControlled = ClientPrefs.data.botOpponentFix;
 
-		replayExam = new Replay(PlayState);
-		if (!replayMode)
-			replayExam.reset();
-		else
-			replayExam.init();
+		replayExam = new Replay(this);
+		add(replayExam);
+		if (replayMode) replayExam.load();
 
 		camGame = initPsychCamera();
 		camHUD = new FlxCamera();
@@ -2555,7 +2553,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		{
 			if (!inCutscene)
 			{
-				replayExam.keysCheck();
 				if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled)
 					keysCheck();
 				else
@@ -2854,10 +2851,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		for (key in 0...keysArray.length)
 		{
-			if (controls.pressed(keysArray[key]))
-				replayExam.pauseCheck(Conductor.songPosition, key);
-			else
-				replayExam.pauseCheck(-9999, key);
+			//待修改
 			// 暂停时候回放数据的保存，防止出现错误;
 		}
 		openSubState(new PauseSubState());
@@ -3436,8 +3430,32 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 						NoteTime, NoteMs
 					]
 				];
-				Highscore.saveGameData(SONG.song, storyDifficulty, details, replayExam.hitData);
-				replayExam.saveDetails(details);
+				Highscore.saveGameData(SONG.song, storyDifficulty, details, null);
+				
+				var record:games.funkin.backend.Replay.StateRecord = {
+					songName: songName,
+					difficulty: Difficulty.getString().toUpperCase(),
+					songLength: songLength,
+					playDate: Date.now().toString(),
+					songSpeed: songSpeed,
+					playbackRate: playbackRate,
+					healthGain: healthGain,
+					healthLoss: healthLoss,
+					cpuControlled: cpuControlled,
+					practiceMode: practiceMode,
+					instakillOnMiss: instakillOnMiss,
+					playOpponent: ClientPrefs.data.playOpponent,
+					flipChart: ClientPrefs.data.flipChart,
+					songScore: songScore,
+					ratingPercent: ratingPercent,
+					ratingFC: ratingFC,
+					songHits: songHits,
+					highestCombo: highestCombo,
+					songMisses: songMisses,
+					hitMapTime: NoteTime,
+					hitMapMs: NoteMs
+				};
+				replayExam.savePlayRecord(record);
 			}
 			#end
 			playbackRate = 1;
@@ -3856,23 +3874,27 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
         callOnHScript('onSpawnNote', singleArg);
     }
 
-	public function onKeyPress(event:KeyboardEvent):Void
+	private function onKeyPress(event:KeyboardEvent):Void
 	{
-		if (replayMode)
-			return;
 		var eventKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
 		if (!controls.controllerMode)
 		{
-			#if debug
-			// Prevents crash specifically on debug without needing to try catch shit
-			@:privateAccess if (!FlxG.keys._keyListMap.exists(eventKey))
-				return;
-			#end
-
 			if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
 				keyPressed(key);
+		}
+	}
+
+	private function onReplayPress(event:KeyboardEvent, time:Float = -999999):Void
+	{
+		var eventKey = event.keyCode;
+		var key:Int = getKeyFromEvent(keysArray, eventKey);
+
+		if (!controls.controllerMode)
+		{
+			if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
+				keyPressed(key, time);
 		}
 	}
 
@@ -3885,9 +3907,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 			return;
 
 		keyboardViewer.pressed(key);
-
-		replayExam.push(Conductor.songPosition, key, 1);
-		// 回放数据的保存
 
 		// had to name it like this else it'd break older scripts lol
 		var ret:Dynamic = callOnScripts('preKeyPress', [key], true);
@@ -4037,8 +4056,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 	private function onKeyRelease(event:KeyboardEvent):Void
 	{
-		if (replayMode)
-			return;
 		var eventKey:FlxKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
@@ -4051,9 +4068,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled && startedCountdown && !paused)
 		{
 			keyboardViewer.released(key);
-
-			replayExam.push(Conductor.songPosition, key, 0);
-			// 回放数据的保存
 
 			var spr:StrumNote = ClientPrefs.data.playOpponent ? opponentStrums.members[key] : playerStrums.members[key];
 			if (spr != null)
@@ -4081,28 +4095,21 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 	}
 
 	// Hold notes
-	public function keysCheck(?keyCount:Int, time:Float = -999999):Void
+	private function keysCheck():Void
 	{
 		for (i in 0...keysArray.length)
 		{
 			var key = keysArray[i];
-			_hold[i] = controls.pressed(key);
+			_hold[i] = controls.pressed(key) || FlxG.keys.checkStatus(key, PRESSED);
 			_press[i] = controls.justPressed(key);
 			_release[i] = controls.justReleased(key);
-		}
-		if (replayMode)
-		{
-			for (i in 0..._hold.length)
-			{
-				_hold[i] = (i == keyCount);
-			}
 		}
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now
 		if (controls.controllerMode && _press.contains(true))
 			for (i in 0..._press.length)
 				if (_press[i] && strumsBlocked[i] != true)
-					keyPressed(i);
+					keyPressed(i, Conductor.songPosition);
 
 		var char:Character = ClientPrefs.data.playOpponent ? dad : boyfriend;
 		if (startedCountdown && !char.stunned && generatedMusic)
@@ -4127,9 +4134,9 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 							&& daNote.canHold)
 						{
 							if (daNote.mustPress && !ClientPrefs.data.playOpponent)
-								goodNoteHit(daNote, time);
+								goodNoteHit(daNote, Conductor.songPosition);
 							if (!daNote.mustPress && ClientPrefs.data.playOpponent)
-								opponentNoteHitForOpponent(daNote, time);
+								opponentNoteHitForOpponent(daNote, Conductor.songPosition);
 						}
 					}
 					i++;

@@ -37,7 +37,7 @@ class EncryptUtil {
     /**
      * AES-256-CBC 加密
      */
-    private static function aesEncrypt(data:String):String {
+    public static function aesEncrypt(data:String):String {
         var iv:Bytes = generateRandomIV();
 
         trace("iv: " + iv.toString());
@@ -59,7 +59,7 @@ class EncryptUtil {
     /**
      * AES-256-CBC 解密
      */
-    private static function aesDecrypt(encryptedBase64:String):String {
+    public static function aesDecrypt(encryptedBase64:String):String {
         var encryptedBytes:Bytes = Base64.decode(encryptedBase64);
         
         if (encryptedBytes.length < BLOCK_SIZE) {
