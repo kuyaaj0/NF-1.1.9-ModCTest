@@ -267,7 +267,7 @@ class PlayState extends MusicBeatState
 	public var practiceMode:Bool = false;
 	
 	public static var replayMode:Bool = false;
-	public var replayExam:Replay;
+	private var replayExam:Replay;
 
 	public var txtSine:Float = 0;
 	public var botplayTxt:FlxText;
@@ -408,10 +408,9 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.data.playOpponent)
 			cpuControlled = ClientPrefs.data.botOpponentFix;
 
-		replayExam = new Replay();
+		replayExam = new Replay(this);
 		add(replayExam);
-		//if (!replayMode)
-			
+		if (replayMode) replayExam.load();
 
 		camGame = initPsychCamera();
 		camHUD = new FlxCamera();
@@ -3435,6 +3434,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 				
 				var record:games.funkin.backend.Replay.StateRecord = {
 					songName: songName,
+					difficulty: Difficulty.getString().toUpperCase(),
 					songLength: songLength,
 					playDate: Date.now().toString(),
 					songSpeed: songSpeed,
@@ -3874,23 +3874,27 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
         callOnHScript('onSpawnNote', singleArg);
     }
 
-	public function onKeyPress(event:KeyboardEvent):Void
+	private function onKeyPress(event:KeyboardEvent):Void
 	{
-		if (replayMode)
-			return;
 		var eventKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
 		if (!controls.controllerMode)
 		{
-			#if debug
-			// Prevents crash specifically on debug without needing to try catch shit
-			@:privateAccess if (!FlxG.keys._keyListMap.exists(eventKey))
-				return;
-			#end
-
 			if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
 				keyPressed(key);
+		}
+	}
+
+	private function onReplayPress(event:KeyboardEvent, time:Float = -999999):Void
+	{
+		var eventKey = event.keyCode;
+		var key:Int = getKeyFromEvent(keysArray, eventKey);
+
+		if (!controls.controllerMode)
+		{
+			if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
+				keyPressed(key, time);
 		}
 	}
 
@@ -4052,8 +4056,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 	private function onKeyRelease(event:KeyboardEvent):Void
 	{
-		if (replayMode)
-			return;
 		var eventKey:FlxKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
@@ -4093,28 +4095,21 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 	}
 
 	// Hold notes
-	public function keysCheck(?keyCount:Int, time:Float = -999999):Void
+	private function keysCheck():Void
 	{
 		for (i in 0...keysArray.length)
 		{
 			var key = keysArray[i];
-			_hold[i] = controls.pressed(key);
+			_hold[i] = controls.pressed(key) || FlxG.keys.checkStatus(key, PRESSED);
 			_press[i] = controls.justPressed(key);
 			_release[i] = controls.justReleased(key);
-		}
-		if (replayMode)
-		{
-			for (i in 0..._hold.length)
-			{
-				_hold[i] = (i == keyCount);
-			}
 		}
 
 		// TO DO: Find a better way to handle controller inputs, this should work for now
 		if (controls.controllerMode && _press.contains(true))
 			for (i in 0..._press.length)
 				if (_press[i] && strumsBlocked[i] != true)
-					keyPressed(i);
+					keyPressed(i, Conductor.songPosition);
 
 		var char:Character = ClientPrefs.data.playOpponent ? dad : boyfriend;
 		if (startedCountdown && !char.stunned && generatedMusic)
@@ -4139,9 +4134,9 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 							&& daNote.canHold)
 						{
 							if (daNote.mustPress && !ClientPrefs.data.playOpponent)
-								goodNoteHit(daNote, time);
+								goodNoteHit(daNote, Conductor.songPosition);
 							if (!daNote.mustPress && ClientPrefs.data.playOpponent)
-								opponentNoteHitForOpponent(daNote, time);
+								opponentNoteHitForOpponent(daNote, Conductor.songPosition);
 						}
 					}
 					i++;
