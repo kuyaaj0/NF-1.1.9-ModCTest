@@ -1,6 +1,7 @@
 package mobile.flixel;
 
 import flixel.graphics.frames.FlxTileFrames;
+import flixel.input.keyboard.FlxKey;
 
 import mobile.flixel.input.FlxMobileInputManager;
 import mobile.flixel.FlxButton;
@@ -14,36 +15,36 @@ import mobile.flixel.FlxButton;
  */
 class FlxVirtualPad extends FlxMobileInputManager
 {
-	public var buttonLeft:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.LEFT, FlxMobileInputID.noteLEFT]);
-	public var buttonUp:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.UP, FlxMobileInputID.noteUP]);
-	public var buttonRight:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.RIGHT, FlxMobileInputID.noteRIGHT]);
-	public var buttonDown:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.DOWN, FlxMobileInputID.noteDOWN]);
+	public var buttonLeft:FlxButton = new FlxButton(0, 0, [FlxKey.LEFT]);
+	public var buttonUp:FlxButton = new FlxButton(0, 0, [FlxKey.UP]);
+	public var buttonRight:FlxButton = new FlxButton(0, 0, [FlxKey.RIGHT]);
+	public var buttonDown:FlxButton = new FlxButton(0, 0, [FlxKey.DOWN]);
 
-	public var buttonLeft2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.LEFT2, FlxMobileInputID.noteLEFT]);
-	public var buttonUp2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.UP2, FlxMobileInputID.noteUP]);
-	public var buttonRight2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.RIGHT2, FlxMobileInputID.noteRIGHT]);
-	public var buttonDown2:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.DOWN2, FlxMobileInputID.noteDOWN]);
+	public var buttonLeft2:FlxButton = new FlxButton(0, 0, [FlxKey.LEFT]);
+	public var buttonUp2:FlxButton = new FlxButton(0, 0, [FlxKey.UP]);
+	public var buttonRight2:FlxButton = new FlxButton(0, 0, [FlxKey.RIGHT]);
+	public var buttonDown2:FlxButton = new FlxButton(0, 0, [FlxKey.DOWN]);
 
-	public var buttonExtra1:FlxButton = new FlxButton(0, 0, null, ClientPrefs.data.extraKeyReturn1);
-	public var buttonExtra2:FlxButton = new FlxButton(0, 0, null, ClientPrefs.data.extraKeyReturn2);
-	public var buttonExtra3:FlxButton = new FlxButton(0, 0, null, ClientPrefs.data.extraKeyReturn3);
-	public var buttonExtra4:FlxButton = new FlxButton(0, 0, null, ClientPrefs.data.extraKeyReturn4);
+	public var buttonExtra1:FlxButton = new FlxButton(0, 0, null, FlxKey.fromString(ClientPrefs.data.extraKeyReturn2));
+	public var buttonExtra2:FlxButton = new FlxButton(0, 0, null, FlxKey.fromString(ClientPrefs.data.extraKeyReturn2));
+	public var buttonExtra3:FlxButton = new FlxButton(0, 0, null, FlxKey.fromString(ClientPrefs.data.extraKeyReturn3));
+	public var buttonExtra4:FlxButton = new FlxButton(0, 0, null, FlxKey.fromString(ClientPrefs.data.extraKeyReturn4));
 
-	public var buttonA:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.A]);
-	public var buttonB:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.B]);
-	public var buttonC:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.C]);
-	public var buttonD:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.D]);
-	public var buttonE:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.E]);
-	public var buttonF:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.F]);
-	public var buttonG:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.G]);
-	public var buttonS:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.S]);
-	public var buttonV:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.V]);
-	public var buttonX:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.X]);
-	public var buttonY:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.Y]);
-	public var buttonZ:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.Z]);
-	public var buttonP:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.P]);
+	public var buttonA:FlxButton = new FlxButton(0, 0, [FlxKey.A]);
+	public var buttonB:FlxButton = new FlxButton(0, 0, [FlxKey.B]);
+	public var buttonC:FlxButton = new FlxButton(0, 0, [FlxKey.C]);
+	public var buttonD:FlxButton = new FlxButton(0, 0, [FlxKey.D]);
+	public var buttonE:FlxButton = new FlxButton(0, 0, [FlxKey.E]);
+	public var buttonF:FlxButton = new FlxButton(0, 0, [FlxKey.F]);
+	public var buttonG:FlxButton = new FlxButton(0, 0, [FlxKey.G]);
+	public var buttonS:FlxButton = new FlxButton(0, 0, [FlxKey.S]);
+	public var buttonV:FlxButton = new FlxButton(0, 0, [FlxKey.V]);
+	public var buttonX:FlxButton = new FlxButton(0, 0, [FlxKey.X]);
+	public var buttonY:FlxButton = new FlxButton(0, 0, [FlxKey.Y]);
+	public var buttonZ:FlxButton = new FlxButton(0, 0, [FlxKey.Z]);
+	public var buttonP:FlxButton = new FlxButton(0, 0, [FlxKey.P]);
 
-	var storedButtonsIDs:Map<String, Array<FlxMobileInputID>> = new Map<String, Array<FlxMobileInputID>>();
+	var storedButtonsIDs:Map<String, Array<FlxKey>> = new Map<String, Array<FlxKey>>();
 
 	/**
 	 * Create a gamepad.

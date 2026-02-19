@@ -3,9 +3,6 @@
 import flixel.addons.display.FlxBackdrop;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.input.keyboard.FlxKey;
-import flixel.input.gamepad.FlxGamepad;
-import flixel.input.gamepad.FlxGamepadInputID;
-import flixel.input.gamepad.FlxGamepadManager;
 import flixel.util.FlxSpriteUtil;
 
 import backend.InputFormatter;
@@ -138,8 +135,6 @@ class NewControlsSubState extends MusicBeatSubstate
 	public static var optionTextStrStatic:String = "";
 
 	public static var setOptionText:FlxText;
-
-	public static var onKeyboardMode:Bool = true;
 
 	var optionTextStr:String = "";
 
@@ -417,10 +412,10 @@ class NewControlsSubState extends MusicBeatSubstate
 			if (holdingEsc > 0.5)
 			{
 				ClientPrefs.keyBinds.get(curOption[1])[curAlt] = NONE;
-				ClientPrefs.clearInvalidKeys(curOption[1]);
-				updateCSNote(onKeyboardMode ? InputFormatter.getKeyName(NONE) : InputFormatter.getGamepadName(NONE));
-				FlxG.sound.play(Paths.sound('cancelMenu'));
-				closeBinding();
+			ClientPrefs.clearInvalidKeys(curOption[1]);
+			updateCSNote(InputFormatter.getKeyName(NONE));
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+			closeBinding();
 			}
 		}
 		else
@@ -428,39 +423,27 @@ class NewControlsSubState extends MusicBeatSubstate
 			holdingEsc = 0;
 			var changed:Bool = false;
 			var curKeys:Array<FlxKey> = ClientPrefs.keyBinds.get(curOption[1]);
-			var curButtons:Array<FlxGamepadInputID> = ClientPrefs.gamepadBinds.get(curOption[1]);
 
-			if (onKeyboardMode)
+			if (FlxG.keys.justPressed.ANY || FlxG.keys.justReleased.ANY)
 			{
-				if (FlxG.keys.justPressed.ANY || FlxG.keys.justReleased.ANY)
+				var keyPressed:Int = FlxG.keys.firstJustPressed();
+				var keyReleased:Int = FlxG.keys.firstJustReleased();
+				if (keyPressed > -1 && keyPressed != FlxKey.ESCAPE && keyPressed != FlxKey.BACKSPACE)
 				{
-					var keyPressed:Int = FlxG.keys.firstJustPressed();
-					var keyReleased:Int = FlxG.keys.firstJustReleased();
-					if (keyPressed > -1 && keyPressed != FlxKey.ESCAPE && keyPressed != FlxKey.BACKSPACE)
-					{
-						curKeys[curAlt] = keyPressed;
-						changed = true;
-					}
-					else if (keyReleased > -1 && (keyReleased == FlxKey.ESCAPE || keyReleased == FlxKey.BACKSPACE))
-					{
-						curKeys[curAlt] = keyReleased;
-						changed = true;
-					}
+					curKeys[curAlt] = keyPressed;
+					changed = true;
+				}
+				else if (keyReleased > -1 && (keyReleased == FlxKey.ESCAPE || keyReleased == FlxKey.BACKSPACE))
+				{
+					curKeys[curAlt] = keyReleased;
+					changed = true;
 				}
 			}
 
 			if (changed)
 			{
-				if (onKeyboardMode)
-				{
-					if (curKeys[curAlt] == curKeys[1 - curAlt])
-						curKeys[1 - curAlt] = FlxKey.NONE;
-				}
-				else
-				{
-					if (curButtons[curAlt] == curButtons[1 - curAlt])
-						curButtons[1 - curAlt] = FlxGamepadInputID.NONE;
-				}
+				if (curKeys[curAlt] == curKeys[1 - curAlt])
+					curKeys[1 - curAlt] = FlxKey.NONE;
 
 				var option:String = curOption[1];
 				ClientPrefs.clearInvalidKeys(option);
@@ -468,16 +451,9 @@ class NewControlsSubState extends MusicBeatSubstate
 				var n:Int = curAlt;
 				var key:String = null;
 
-				if (onKeyboardMode)
-				{
-					var savKey:Array<Null<FlxKey>> = ClientPrefs.keyBinds.get(option);
-					key = InputFormatter.getKeyName(savKey[n] != null ? savKey[n] : NONE);
-				}
-				else
-				{
-					var savKey:Array<Null<FlxGamepadInputID>> = ClientPrefs.gamepadBinds.get(option);
-					key = InputFormatter.getGamepadName(savKey[n] != null ? savKey[n] : NONE);
-				}
+				var savKey:Array<Null<FlxKey>> = ClientPrefs.keyBinds.get(option);
+				key = InputFormatter.getKeyName(savKey[n] != null ? savKey[n] : NONE);
+
 				updateCSNote(key);
 
 				FlxG.sound.play(Paths.sound('confirmMenu'));

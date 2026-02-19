@@ -1,4 +1,4 @@
-﻿package scripts.hscript;
+package scripts.hscript;
 
 import flixel.FlxBasic;
 
@@ -391,80 +391,14 @@ class HScript implements ISharedScript {
 
 				set('keyboardJustPressed', function(name: String) {
 					name = name.toUpperCase();
-					if (MusicBeatState.instance.mobileControls != null) {
-						var extraControl = MusicBeatState.instance.mobileControls.current;
-						if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase()
-							&& extraControl.buttonExtra1 != null
-							&& extraControl.buttonExtra1.justPressed)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn2.toUpperCase()
-							&& extraControl.buttonExtra2 != null
-							&& extraControl.buttonExtra2.justPressed)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase()
-							&& extraControl.buttonExtra3 != null
-							&& extraControl.buttonExtra3.justPressed)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase()
-							&& extraControl.buttonExtra4 != null
-							&& extraControl.buttonExtra4.justPressed)
-							return true;
-					}
 					return Reflect.getProperty(FlxG.keys.justPressed, name);
 				});
 				set('keyboardPressed', function(name: String) {
 					name = name.toUpperCase();
-					if (MusicBeatState.instance.mobileControls != null) {
-						var extraControl = MusicBeatState.instance.mobileControls.current;
-						if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase()
-							&& extraControl.buttonExtra1 != null
-							&& extraControl.buttonExtra1.pressed)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn2.toUpperCase()
-							&& extraControl.buttonExtra2 != null
-							&& extraControl.buttonExtra2.pressed)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase()
-							&& extraControl.buttonExtra3 != null
-							&& extraControl.buttonExtra3.pressed)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase()
-							&& extraControl.buttonExtra4 != null
-							&& extraControl.buttonExtra4.pressed)
-							return true;
-					}
 					return Reflect.getProperty(FlxG.keys.pressed, name);
 				});
 				set('keyboardReleased', function(name: String) {
 					name = name.toUpperCase();
-					if (MusicBeatState.instance.mobileControls != null) {
-						var extraControl = MusicBeatState.instance.mobileControls.current;
-						if (name == ClientPrefs.data.extraKeyReturn1.toUpperCase()
-							&& extraControl.buttonExtra1 != null
-							&& extraControl.buttonExtra1.justReleased)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn2.toUpperCase()
-							&& extraControl.buttonExtra2 != null
-							&& extraControl.buttonExtra2.justReleased)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn3.toUpperCase()
-							&& extraControl.buttonExtra3 != null
-							&& extraControl.buttonExtra3.justReleased)
-							return true;
-
-						if (name == ClientPrefs.data.extraKeyReturn4.toUpperCase()
-							&& extraControl.buttonExtra4 != null
-							&& extraControl.buttonExtra4.justReleased)
-							return true;
-					}
 					return Reflect.getProperty(FlxG.keys.justReleased, name);
 				});
 
