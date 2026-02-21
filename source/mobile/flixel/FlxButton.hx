@@ -270,6 +270,18 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	 */
 	override public function destroy():Void
 	{
+		// Fix: Release keys when destroying the button to prevent stuck keys
+		if (status == PRESSED)
+		{
+			for (id in IDs)
+			{
+				@:privateAccess {
+					var key = FlxG.keys.getKey(id);
+					if (key != null) key.current = 0; // RELEASED
+				}
+			}
+		}
+
 		label = FlxDestroyUtil.destroy(label);
 		_spriteLabel = null;
 
@@ -315,7 +327,9 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 						@:privateAccess {
 							var key = FlxG.keys.getKey(id);
 							if (key != null) {
-								key.current = 0; // RELEASED
+								// Only force to RELEASED if it wasn't JUST_RELEASED (to preserve justReleased state)
+								if (key.current != -1)
+									key.current = 0; // RELEASED
 							}
 						}
 					}
@@ -333,7 +347,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 				@:privateAccess {
 					var key = FlxG.keys.getKey(id);
 					if (key != null && (key.current == 0 || key.current == -1)) { // RELEASED or JUST_RELEASED
-						key.current = 2; // PRESSED
+					 	key.current = 1; // PRESSED
 					}
 				}
 			}
@@ -425,7 +439,10 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		for (camera in cameras)
 			for (touch in FlxG.touches.list)
 				if (checkInput(touch, touch, touch.justPressedPosition, camera))
+				{
 					overlap = true;
+					return overlap;
+				}
 
 		return overlap;
 	}
@@ -461,9 +478,14 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		{
 			// Allow 'swiping' to press a button (dragging it over the button while pressed)
 			if (allowSwiping && input.pressed)
+			{
+				currentInput = input;
 				onDownHandler();
+			}
 			else
+			{
 				onOverHandler();
+			}
 		}
 	}
 
@@ -491,7 +513,6 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		input.release();
 		currentInput = null;
 
-		/*
 		for (id in IDs)
 		{
 			@:privateAccess {
@@ -501,7 +522,6 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 				}
 			}
 		}
-		*/
 
 		onUp.fire(); // Order matters here, because onUp.fire() could cause a state change and destroy this object.
 	}
@@ -519,7 +539,8 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 			@:privateAccess {
 				var key = FlxG.keys.getKey(id);
 				if (key != null) {
-					key.current = 1; // JUST_PRESSED
+					if (key.current != 1 && key.current != 2)
+						key.current = 2; // JUST_PRESSED
 				}
 			}
 		}

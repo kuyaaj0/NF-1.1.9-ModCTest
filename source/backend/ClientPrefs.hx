@@ -299,7 +299,12 @@ class ClientPrefs
 		if (controller != true)
 			for (key in keyBinds.keys())
 				if (defaultKeys.exists(key))
-					keyBinds.set(key, defaultKeys.get(key).copy());
+				{
+					var arr = keyBinds.get(key);
+					arr.resize(0);
+					for (i in defaultKeys.get(key))
+						arr.push(i);
+				}
 	}
 
 	public static function clearInvalidKeys(key:String)
@@ -311,7 +316,7 @@ class ClientPrefs
 
 	public static function loadDefaultKeys()
 	{
-		defaultKeys = keyBinds.copy();
+		defaultKeys = [for (key => value in keyBinds) key => value.copy()];
 	}
 
 	public static function saveSettings()
@@ -498,7 +503,12 @@ class ClientPrefs
 				var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
 				for (control => keys in loadedControls)
 					if (keyBinds.exists(control))
-						keyBinds.set(control, keys);
+					{
+						var arr = keyBinds.get(control);
+						arr.resize(0);
+						for (i in keys)
+							arr.push(i);
+					}
 			}
 
 			reloadVolumeKeys();

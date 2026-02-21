@@ -143,8 +143,7 @@ class Controls
 		if (result)
 			controllerMode = false;
 
-		return result
-			|| virtualPadJustPressed(keyboardBinds[key]) == true;
+		return result;
 	}
 
 	public function pressed(key:String)
@@ -153,8 +152,7 @@ class Controls
 		if (result)
 			controllerMode = false;
 
-		return result
-			|| virtualPadPressed(keyboardBinds[key]) == true;
+		return result;
 	}
 
 	public function justReleased(key:String)
@@ -163,8 +161,7 @@ class Controls
 		if (result)
 			controllerMode = false;
 
-		return result
-			|| virtualPadJustReleased(keyboardBinds[key]) == true;
+		return result;
 	}
 
 	public var controllerMode:Bool = false;
@@ -173,45 +170,6 @@ class Controls
 	public var requested(get, default):Dynamic; // is set to MusicBeatState or MusicBeatSubstate when the constructor is called
 	public var gameplayRequest(get, default):Dynamic; // for PlayState and EditorPlayState (hitbox and virtualPad)
 	public var mobileC(get, never):Bool;
-
-	private function virtualPadPressed(keys:Array<FlxKey>):Bool
-	{
-		if (keys != null && requested.virtualPad != null)
-		{
-			if (requested.virtualPad.anyPressed(keys) == true)
-			{
-				controllerMode = true; // !!DO NOT DISABLE THIS IF YOU DONT WANT TO KILL THE INPUT FOR MOBILE!!
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private function virtualPadJustPressed(keys:Array<FlxKey>):Bool
-	{
-		if (keys != null && requested.virtualPad != null)
-		{
-			if (requested.virtualPad.anyJustPressed(keys) == true)
-			{
-				controllerMode = true;
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private function virtualPadJustReleased(keys:Array<FlxKey>):Bool
-	{
-		if (keys != null && requested.virtualPad != null)
-		{
-			if (requested.virtualPad.anyJustReleased(keys) == true)
-			{
-				controllerMode = true;
-				return true;
-			}
-		}
-		return false;
-	}
 
 	@:noCompletion
 	private function get_requested():Dynamic
