@@ -43,12 +43,31 @@ class CreditsState extends MusicBeatState
 				'https://github.com/MaoPou'
 			],
 			[
+				'VapireMox',
+				'vapiremox',
+				'Programmer',
+				"hscript-iris-improved Developer\n\n\nYou're right about everything, and you've done everything correctly. I will obey you.",
+				'090C1A',
+				'https://github.com/VapireMox',
+				'https://b23.tv/LD5ekXY'
+			],
+			[
+				'Kangel',
+				'kangel',
+				'Programmer',
+				'Code help\n\n\nThis is a message.',
+				'ffffff',
+				'https://github.com/kangeluwu',
+				'https://www.youtube.com/@kannoYuki0524'
+			],
+			[
 				'Chiny',
 				'chiny',
 				'Programmer',
-				'Credit state logic creator\n\n\nTouhou player',
-				'3399FF',
-				'https://space.bilibili.com/3493288327777064'
+				'Credit state logic creator\n\n\nBanGDream Touhou Player',
+				'800080',
+				'https://space.bilibili.com/3493288327777064',
+				'https://github.com/dmmchh'
 			],
 			[
 				'TieGuo',
@@ -88,7 +107,7 @@ class CreditsState extends MusicBeatState
 				'Ben Eyre',
 				'beneyre',
 				'Artist',
-				'Credit state artist\n\n\nHello',
+				"FreePlay/Credit state artist\n\n\nI can't believe I actually have the honor of being added to the production team.",
 				'FFCDA4',
 				'https://b23.tv/cB2uujD',
 				'https://x.com/hngstngxng83905?t=GDKWYMRZsCMUMXYs0cmYrw&s=09'

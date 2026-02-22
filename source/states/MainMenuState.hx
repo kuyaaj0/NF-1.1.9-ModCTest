@@ -474,12 +474,6 @@ class MainMenuState extends MusicBeatState
 				endCheck = true;
 				MusicBeatState.switchState(new MasterEditorMenu());
 			}
-
-			if (FlxG.keys.justPressed.SHIFT)
-			{
-				MusicBeatState.switchState(new useless.editors.ChartingState());
-			}
-
 		}
 
 		SoundTime = FlxG.sound.music.time / 1000;
