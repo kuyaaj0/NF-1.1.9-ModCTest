@@ -3879,11 +3879,9 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		var eventKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
-		if (!controls.controllerMode)
-		{
-			if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
-				keyPressed(key);
-		}
+		
+		if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
+			keyPressed(key);
 	}
 
 	private function onReplayPress(event:KeyboardEvent, time:Float = -999999):Void
@@ -3891,11 +3889,8 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		var eventKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
-		if (!controls.controllerMode)
-		{
-			if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
-				keyPressed(key, time);
-		}
+		if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
+			keyPressed(key, time);
 	}
 
 	private function keyPressed(key:Int, ?time:Float = -999999)
@@ -4059,7 +4054,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		var eventKey:FlxKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
-		if (!controls.controllerMode && key > -1)
+		if (key > -1)
 			keyReleased(key);
 	}
 
@@ -4105,11 +4100,12 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 			_release[i] = controls.justReleased(key);
 		}
 
-		// TO DO: Find a better way to handle controller inputs, this should work for now
+		/*
 		if (controls.controllerMode && _press.contains(true))
 			for (i in 0..._press.length)
 				if (_press[i] && strumsBlocked[i] != true)
 					keyPressed(i, Conductor.songPosition);
+		*/
 
 		var char:Character = ClientPrefs.data.playOpponent ? dad : boyfriend;
 		if (startedCountdown && !char.stunned && generatedMusic)
@@ -4152,11 +4148,12 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 			#end
 		}
 
-		// TO DO: Find a better way to handle controller inputs, this should work for now
+		/*
 		if ((controls.controllerMode || strumsBlocked.contains(true)) && _release.contains(true))
 			for (i in 0..._release.length)
 				if (_release[i] || strumsBlocked[i] == true)
 					keyReleased(i);
+		*/
 	}
 
 	public function noteMiss(daNote:Note, ?index:Int = -1):Void
@@ -5399,13 +5396,13 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (luaVirtualPad != null)
 		{
 			if (Std.isOfType(button, String))
-				return luaVirtualPad.buttonPressed(FlxMobileInputID.fromString(button));
+				return luaVirtualPad.buttonPressed(FlxKey.fromString(button));
 			else if (Std.isOfType(button, Array))
 			{
 				var FUCK:Array<String> = button; // haxe said "You Can't Iterate On A Dyanmic Value Please Specificy Iterator or Iterable *insert ned emoji*" so that's the only i foud to fix
-				var idArray:Array<FlxMobileInputID> = [];
+				var idArray:Array<FlxKey> = [];
 				for (strId in FUCK)
-					idArray.push(FlxMobileInputID.fromString(strId));
+					idArray.push(FlxKey.fromString(strId));
 				return luaVirtualPad.anyPressed(idArray);
 			}
 			else
@@ -5419,13 +5416,13 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (luaVirtualPad != null)
 		{
 			if (Std.isOfType(button, String))
-				return luaVirtualPad.buttonJustPressed(FlxMobileInputID.fromString(button));
+				return luaVirtualPad.buttonJustPressed(FlxKey.fromString(button));
 			else if (Std.isOfType(button, Array))
 			{
 				var FUCK:Array<String> = button;
-				var idArray:Array<FlxMobileInputID> = [];
+				var idArray:Array<FlxKey> = [];
 				for (strId in FUCK)
-					idArray.push(FlxMobileInputID.fromString(strId));
+					idArray.push(FlxKey.fromString(strId));
 				return luaVirtualPad.anyJustPressed(idArray);
 			}
 			else
@@ -5439,13 +5436,13 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (luaVirtualPad != null)
 		{
 			if (Std.isOfType(button, String))
-				return luaVirtualPad.buttonJustReleased(FlxMobileInputID.fromString(button));
+				return luaVirtualPad.buttonJustReleased(FlxKey.fromString(button));
 			else if (Std.isOfType(button, Array))
 			{
 				var FUCK:Array<String> = button;
-				var idArray:Array<FlxMobileInputID> = [];
+				var idArray:Array<FlxKey> = [];
 				for (strId in FUCK)
-					idArray.push(FlxMobileInputID.fromString(strId));
+					idArray.push(FlxKey.fromString(strId));
 				return luaVirtualPad.anyJustReleased(idArray);
 			}
 			else

@@ -2,9 +2,6 @@ package options.objects.controlsSubState;
 
 import flixel.math.FlxRect;
 import flixel.util.FlxSpriteUtil;
-import flixel.input.gamepad.FlxGamepad;
-import flixel.input.gamepad.FlxGamepadInputID;
-import flixel.input.gamepad.FlxGamepadManager;
 import flixel.input.keyboard.FlxKey;
 
 import backend.InputFormatter;
@@ -334,17 +331,16 @@ class ControlsSprite extends FlxSpriteGroup
         NewControlsSubState.instance.buttonYpos = v;
     }
 
-    public function resetindieNote(i:Int)
-    {
-        var optionsButtonArray = NewControlsSubState.instance.optionsButtonArray;
-        var key = optionsButtonArray[i].noteSprite.strArray[1];
+	public function resetindieNote(i:Int)
+	{
+		var optionsButtonArray = NewControlsSubState.instance.optionsButtonArray;
+		var key = optionsButtonArray[i].noteSprite.strArray[1];
 
-		if (NewControlsSubState.onKeyboardMode == true)
-            if (ClientPrefs.defaultKeys.exists(key))
-                ClientPrefs.keyBinds.set(key, ClientPrefs.defaultKeys.get(key).copy());
+		if (ClientPrefs.defaultKeys.exists(key))
+			ClientPrefs.keyBinds.set(key, ClientPrefs.defaultKeys.get(key).copy());
 
-        updateNoteSpriteText(i, optionsButtonArray);
-    }
+		updateNoteSpriteText(i, optionsButtonArray);
+	}
 
     public function reNoteFunction()
     {
@@ -354,7 +350,7 @@ class ControlsSprite extends FlxSpriteGroup
 
             if (!NewControlsSubState.allowControlsMode && FlxG.mouse.justPressed)
             {
-                ClientPrefs.resetKeys(!NewControlsSubState.onKeyboardMode);
+                ClientPrefs.resetKeys(false);
                 ClientPrefs.reloadVolumeKeys();
                 FlxG.sound.play(Paths.sound('cancelMenu'));
 
@@ -380,16 +376,8 @@ class ControlsSprite extends FlxSpriteGroup
             if (optionsButtonArray[i].wwidth != 0) { // 检测是不是有noteSprite(可以更改按键的)SpriteGroup
                 var option:String = optionsButtonArray[i].noteSprite.strArray[1];
 
-                if (NewControlsSubState.onKeyboardMode)
-                {
-                    var savKey:Array<Null<FlxKey>> = ClientPrefs.keyBinds.get(option);
-                    key = InputFormatter.getKeyName(savKey[n] != null ? savKey[n] : NONE);
-                }
-                else
-                {
-                    var savKey:Array<Null<FlxGamepadInputID>> = ClientPrefs.gamepadBinds.get(option);
-                    key = InputFormatter.getGamepadName(savKey[n] != null ? savKey[n] : NONE);
-                }
+                var savKey:Array<Null<FlxKey>> = ClientPrefs.keyBinds.get(option);
+                key = InputFormatter.getKeyName(savKey[n] != null ? savKey[n] : NONE);
 
                 optionsButtonArray[i].noteSprite.updateText(n, key);
             }
@@ -654,16 +642,8 @@ class ControlsNoteSprite extends FlxSpriteGroup
     public function returnKey(i:Int):String
     {
         var key:String = null;
-        if (NewControlsSubState.onKeyboardMode)
-        {
-            var savKey:Array<Null<FlxKey>> = ClientPrefs.keyBinds.get(strArray[1]);
-            key = InputFormatter.getKeyName((savKey[i] != null) ? savKey[i] : NONE);
-        }
-        else
-        {
-            var savKey:Array<Null<FlxGamepadInputID>> = ClientPrefs.gamepadBinds.get(strArray[1]);
-            key = InputFormatter.getGamepadName((savKey[i] != null) ? savKey[i] : NONE);
-        }
+        var savKey:Array<Null<FlxKey>> = ClientPrefs.keyBinds.get(strArray[1]);
+        key = InputFormatter.getKeyName((savKey[i] != null) ? savKey[i] : NONE);
         return key;
     }
 
