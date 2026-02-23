@@ -118,7 +118,7 @@
     <haxelib name="crypto" />
     <haxelib name="trandom" unless="android" />
 	<haxelib name="hxWebSockets" />
-	<haxelib name="spine-haxe" />
+	<!--haxelib name="spine-haxe" /-->
 
 	<!--Psych stuff needed-->
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
