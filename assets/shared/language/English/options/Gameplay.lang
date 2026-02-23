@@ -1,0 +1,38 @@
+GamePlay => Gameplay
+
+downScroll => Downscroll
+middleScroll => MiddleScroll
+flipChart => Flip Chart
+ghostTapping => Ghost Tapping
+guitarHeroSustains => Guitar Hero Sustains
+noReset => No Reset
+
+
+Opponent => Opponent
+
+playOpponent => Play Opponent
+opponentCodeFix => Opponent Code Fix
+botOpponentFix => Bot Opponent Fix
+HealthDrainOPPO => Opponent Health Drain
+HealthDrainOPPOMult => Opponent Drain Mult
+
+
+judgement => Judgement
+
+safeFrames => Safe Frames
+marvelousWindow => Marvelous Window
+sickWindow => Sick Window
+goodWindow => Good Window
+badWindow => Bad Window
+marvelousRating => Marvelous Rating
+marvelousSprite => Marvelous Sprite
+ratingOffset => Rating Offset
+NoteOffsetState => Note Offset
+
+
+Gameplaybackend => Gameplay Backend
+
+replayBot => Replay Bot
+fixLNL => Fix Long Notes
+saveScoreBase => playback record storage basis
+gameOverVibration => Game Over Vibration

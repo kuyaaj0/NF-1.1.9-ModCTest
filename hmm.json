@@ -1,0 +1,173 @@
+{
+  "dependencies": [
+    {
+      "name": "lime",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/lime-8.3.0"
+    },
+    {
+      "name": "openfl",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/openfl-9.5.0"
+    },
+    {
+      "name": "flixel",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/flixel-5.9.0"
+    },
+    {
+      "name": "luahscript",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/VapireMox/luahscript"
+    },
+    {
+      "name": "spine-haxe",
+      "type": "git",
+      "dir": "spine-haxe",
+      "ref": "cd726af62b8cbf12ba47c6c0f68d8e04451cf162",
+      "url": "https://github.com/EsotericSoftware/spine-runtimes/"
+    },
+    {
+      "name": "flixel-addons",
+      "type": "haxelib",
+      "version": "3.3.2"
+    },
+    {
+      "name": "flixel-ui",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/flixel-ui"
+    },
+    {
+      "name": "flixel-tools",
+      "type": "haxelib",
+      "version": "1.5.1"
+    },
+    {
+      "name": "haxeui-core",
+      "type": "haxelib",
+      "version": "1.7.0"
+    },
+    {
+      "name": "haxeui-flixel",
+      "type": "haxelib",
+      "version": "1.7.0"
+    },
+    {
+      "name": "crypto",
+      "type": "haxelib",
+      "version": "1.0.4"
+    },
+    {
+      "name": "trandom",
+      "type": "haxelib",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hxWebSockets",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/ianharrigan/hxWebSockets.git"
+    },
+    {
+      "name": "modcharts",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/modcharts"
+    },
+    {
+      "name": "hxcpp",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/hxcpp-4.3.2-new.git"
+    },
+    {
+      "name": "hxvlc",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/hxvlc-2.2.4.git"
+    },
+    {
+      "name": "hscript-iris-improved",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/NovaFlare-Engine-Concentration/hscript-iris-improved"
+    },
+    {
+      "name": "flxsoundfilters",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/FlxSoundFilters"
+    },
+    {
+      "name": "hxcpp-debug-server",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "tjson",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "hxdiscord_rpc",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "json2object",
+      "type": "haxelib",
+      "version": null
+    },
+    {
+      "name": "linc_luajit",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/linc_luajit"
+    },
+    {
+      "name": "flxanimate",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/beihu235/flxanimate"
+    },
+    {
+      "name": "extension-androidtools",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/extension-androidtools"
+    },
+    {
+      "name": "funkin.vis",
+      "type": "git",
+      "dir": null,
+      "ref": "main",
+      "url": "https://github.com/NovaFlare-Engine-haxelib/funkVis-FrequencyFixed"
+    },
+    {
+      "name": "grig.audio",
+      "type": "git",
+      "dir": "src",
+      "ref": "57f5d47f2533fd0c3dcd025a86cb86c0dfa0b6d2",
+      "url": "https://gitlab.com/haxe-grig/grig.audio.git"
+    }
+  ]
+}
