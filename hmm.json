@@ -22,9 +22,16 @@
       "url": "https://github.com/NovaFlare-Engine-haxelib/flixel-5.9.0"
     },
     {
+      "name": "luahscript",
+      "type": "git",
+      "dir": null,
+      "ref": "master",
+      "url": "https://github.com/VapireMox/luahscript"
+    },
+    {
       "name": "spine-haxe",
       "type": "git",
-      "dir": "src",
+      "dir": "spine-haxe",
       "ref": "cd726af62b8cbf12ba47c6c0f68d8e04451cf162",
       "url": "https://github.com/EsotericSoftware/spine-runtimes/"
     },
