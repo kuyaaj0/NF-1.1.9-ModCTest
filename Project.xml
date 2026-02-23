@@ -106,6 +106,10 @@
 	</section>
 	<assets path='art/readme.txt' rename='do NOT readme.txt' unless="mobile"/>
 
+	<!--不知道为什么他不起作用，目前是直接在haxelib的flixel-ui里面的assets里改的（应该是embed冲突了懒得改了）-->
+	<!--assets path="assets/flixel/flixel-ui/img" rename="flixel/flixel-ui/img" embed="true" /-->
+	<!--assets path="assets/flixel/flixel-ui/xml" rename="flixel/flixel-ui/xml" embed="true" /-->
+
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />

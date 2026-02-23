@@ -428,12 +428,6 @@ class ChartingState extends MusicBeatState
 		zoomTxt.scrollFactor.set();
 		add(zoomTxt);
 
-		var timer:FlxTimer = new FlxTimer().start(30, function(tmr:FlxTimer) {
-			saveLevel();
-			saveEvents();
-			tmr.reset(30);
-		}, 0);
-
 		updateGrid();
 
 		addVirtualPad(ChartingStateC, ChartingStateC);
