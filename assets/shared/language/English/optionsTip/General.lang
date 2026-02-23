@@ -1,9 +1,10 @@
 General => General
 
 framerate => Change your FPS cap
-frawFrameRate => for the maximum number of frames to draw, see update upper Limit Discrimination
+frawFramerate => for the maximum number of frames to draw, see update upper Limit Discrimination
 language => Change engine language
 lockRender => Will update separate from the draw update, the effect is to increase the number of frames by about two to three times (depending on device performance)
+renderThread => Separating the rendering thread improves frame rates
 gameQuality => Change game quality for screen
 lowQuality => Turn off some object on stages
 colorblindMode => Colorblind filter more playable for colorblind people

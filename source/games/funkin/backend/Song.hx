@@ -164,24 +164,6 @@ class Song
 			}
 		}
 
-		if (convertTo != null && convertTo.length > 0)
-		{
-			var fmt:String = songJson.format;
-			if (fmt == null)
-				fmt = songJson.format = 'unknown';
-
-			switch (convertTo)
-			{
-				case 'psych_v1':
-					if (!fmt.startsWith('psych_v1')) // Convert to Psych 1.0 format
-					{
-						//trace('converting chart $nameForError with format $fmt to psych_v1 format...');
-						songJson.format = 'psych_v1_convert';
-						
-					}
-			}
-		}
-
 		onLoadJson(songJson);
 		return songJson;
 	}

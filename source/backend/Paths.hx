@@ -260,17 +260,13 @@ class Paths
 		#if MODS_ALLOWED
 		var file:String = modsSounds('songs/', key);
 
-		trace(file);
-
 		if (FileSystem.exists(file))
 		{
 			return file;
 		}
 		#end
 
-		var retKey:String = key;
-		retKey = getPath('$retKey.$SOUND_EXT', SOUND, 'songs');
-		return retKey;
+		return 'assets/songs/$key.$SOUND_EXT';
 	}
 
 	inline static public function voices(song:String, postfix:String = null):Any

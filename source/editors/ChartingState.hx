@@ -226,6 +226,7 @@ class ChartingState extends MusicBeatState
 				gfVersion: 'gf',
 				speed: 1,
 				stage: 'stage',
+				mania: 3,
 				format: 'na'
 			};
 			addSection();
@@ -426,6 +427,12 @@ class ChartingState extends MusicBeatState
 		zoomTxt = new FlxText(10, 10, 0, "Zoom: 1 / 1", 16);
 		zoomTxt.scrollFactor.set();
 		add(zoomTxt);
+
+		var timer:FlxTimer = new FlxTimer().start(30, function(tmr:FlxTimer) {
+			saveLevel();
+			saveEvents();
+			tmr.reset(30);
+		}, 0);
 
 		updateGrid();
 
