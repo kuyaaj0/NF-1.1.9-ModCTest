@@ -303,7 +303,6 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		#if FLX_POINTER_INPUT
 		FlxG.signals.preUpdate.remove(onPreUpdate);
 		#end
-		
 
 		super.destroy();
 	}
