@@ -1,4 +1,4 @@
-﻿package options;
+package options;
 
 import states.MainMenuState;
 import states.freeplayState.FreeplayState;

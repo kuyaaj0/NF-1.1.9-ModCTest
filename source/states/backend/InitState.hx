@@ -1,4 +1,4 @@
-﻿package states.backend;
+package states.backend;
 
 import sys.thread.Thread;
 
@@ -10,8 +10,6 @@ import lime.graphics.Image;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.events.KeyboardEvent;
-
-import flixel.input.gamepad.FlxGamepad;
 
 import states.StoryMenuState;
 import states.backend.OutdatedState;
@@ -282,20 +280,7 @@ class InitState extends MusicBeatState
 		if (FlxG.android.justReleased.BACK)
 			pressedEnter = true;
 		#end
-	
-		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
-	
-		if (gamepad != null)
-		{
-			if (gamepad.justPressed.START)
-				pressedEnter = true;
-	
-			#if switch
-			if (gamepad.justPressed.B)
-				pressedEnter = true;
-			#end
-		}
-		
+
 		if (pressedEnter)
 		{
 			changeState();

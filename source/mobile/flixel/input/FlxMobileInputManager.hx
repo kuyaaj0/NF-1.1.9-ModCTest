@@ -3,7 +3,6 @@ package mobile.flixel.input;
 import haxe.ds.Map;
 
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
-import flixel.input.keyboard.FlxKey;
 
 import mobile.flixel.FlxButton;
 
@@ -15,7 +14,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	/**
 	 * A map to keep track of all the buttons using it's ID
 	 */
-	public var trackedButtons:Map<FlxKey, FlxButton> = new Map<FlxKey, FlxButton>();
+	public var trackedButtons:Map<FlxMobileInputID, FlxButton> = new Map<FlxMobileInputID, FlxButton>();
 
 	public function new()
 	{
@@ -29,7 +28,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	button 	A button ID
 	 * @return	Whether at least one of the buttons passed was pressed.
 	 */
-	public inline function buttonPressed(button:FlxKey):Bool
+	public inline function buttonPressed(button:FlxMobileInputID):Bool
 	{
 		return anyPressed([button]);
 	}
@@ -40,7 +39,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	button 	A button ID
 	 * @return	Whether at least one of the buttons passed was just pressed.
 	 */
-	public inline function buttonJustPressed(button:FlxKey):Bool
+	public inline function buttonJustPressed(button:FlxMobileInputID):Bool
 	{
 		return anyJustPressed([button]);
 	}
@@ -51,7 +50,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	button 	A button ID
 	 * @return	Whether at least one of the buttons passed was just released.
 	 */
-	public inline function buttonJustReleased(button:FlxKey):Bool
+	public inline function buttonJustReleased(button:FlxMobileInputID):Bool
 	{
 		return anyJustReleased([button]);
 	}
@@ -62,7 +61,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	buttonsArray 	An array of buttos names
 	 * @return	Whether at least one of the buttons passed in is pressed.
 	 */
-	public inline function anyPressed(buttonsArray:Array<FlxKey>):Bool
+	public inline function anyPressed(buttonsArray:Array<FlxMobileInputID>):Bool
 	{
 		return checkButtonArrayState(buttonsArray, PRESSED);
 	}
@@ -73,7 +72,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	buttonsArray 	An array of buttons names
 	 * @return	Whether at least one of the buttons passed was just pressed.
 	 */
-	public inline function anyJustPressed(buttonsArray:Array<FlxKey>):Bool
+	public inline function anyJustPressed(buttonsArray:Array<FlxMobileInputID>):Bool
 	{
 		return checkButtonArrayState(buttonsArray, JUST_PRESSED);
 	}
@@ -84,7 +83,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	buttonsArray 	An array of button names
 	 * @return	Whether at least one of the buttons passed was just released.
 	 */
-	public inline function anyJustReleased(buttonsArray:Array<FlxKey>):Bool
+	public inline function anyJustReleased(buttonsArray:Array<FlxMobileInputID>):Bool
 	{
 		return checkButtonArrayState(buttonsArray, JUST_RELEASED);
 	}
@@ -96,16 +95,16 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	state		The button state to check for.
 	 * @return	Whether the provided key has the specified status.
 	 */
-	public function checkStatus(button:FlxKey, state:ButtonsStates = JUST_PRESSED):Bool
+	public function checkStatus(button:FlxMobileInputID, state:ButtonsStates = JUST_PRESSED):Bool
 	{
 		switch (button)
 		{
-			case FlxKey.ANY:
+			case FlxMobileInputID.ANY:
 				for (button in trackedButtons.keys())
 				{
 					checkStatusUnsafe(button, state);
 				}
-			case FlxKey.NONE:
+			case FlxMobileInputID.NONE:
 				return false;
 
 			default:
@@ -122,7 +121,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 	 * @param	state		The button state to check for
 	 * @return	Whether at least one of the buttons has the specified status
 	 */
-	function checkButtonArrayState(Buttons:Array<FlxKey>, state:ButtonsStates = JUST_PRESSED):Bool
+	function checkButtonArrayState(Buttons:Array<FlxMobileInputID>, state:ButtonsStates = JUST_PRESSED):Bool
 	{
 		if (Buttons == null)
 			return false;
@@ -134,7 +133,7 @@ class FlxMobileInputManager extends FlxTypedSpriteGroup<FlxButton>
 		return false;
 	}
 
-	function checkStatusUnsafe(button:FlxKey, state:ButtonsStates = JUST_PRESSED):Bool
+	function checkStatusUnsafe(button:FlxMobileInputID, state:ButtonsStates = JUST_PRESSED):Bool
 	{
 		return switch (state)
 		{

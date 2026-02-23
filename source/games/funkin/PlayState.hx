@@ -1,4 +1,4 @@
-﻿package games.funkin;
+package games.funkin;
 
 import haxe.Timer;
 import haxe.Json;
@@ -5396,13 +5396,13 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (luaVirtualPad != null)
 		{
 			if (Std.isOfType(button, String))
-				return luaVirtualPad.buttonPressed(FlxKey.fromString(button));
+				return luaVirtualPad.buttonPressed(FlxMobileInputID.fromString(button));
 			else if (Std.isOfType(button, Array))
 			{
 				var FUCK:Array<String> = button; // haxe said "You Can't Iterate On A Dyanmic Value Please Specificy Iterator or Iterable *insert ned emoji*" so that's the only i foud to fix
-				var idArray:Array<FlxKey> = [];
+				var idArray:Array<FlxMobileInputID> = [];
 				for (strId in FUCK)
-					idArray.push(FlxKey.fromString(strId));
+					idArray.push(FlxMobileInputID.fromString(strId));
 				return luaVirtualPad.anyPressed(idArray);
 			}
 			else
@@ -5416,13 +5416,13 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (luaVirtualPad != null)
 		{
 			if (Std.isOfType(button, String))
-				return luaVirtualPad.buttonJustPressed(FlxKey.fromString(button));
+				return luaVirtualPad.buttonJustPressed(FlxMobileInputID.fromString(button));
 			else if (Std.isOfType(button, Array))
 			{
 				var FUCK:Array<String> = button;
-				var idArray:Array<FlxKey> = [];
+				var idArray:Array<FlxMobileInputID> = [];
 				for (strId in FUCK)
-					idArray.push(FlxKey.fromString(strId));
+					idArray.push(FlxMobileInputID.fromString(strId));
 				return luaVirtualPad.anyJustPressed(idArray);
 			}
 			else
@@ -5436,13 +5436,13 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		if (luaVirtualPad != null)
 		{
 			if (Std.isOfType(button, String))
-				return luaVirtualPad.buttonJustReleased(FlxKey.fromString(button));
+				return luaVirtualPad.buttonJustReleased(FlxMobileInputID.fromString(button));
 			else if (Std.isOfType(button, Array))
 			{
 				var FUCK:Array<String> = button;
-				var idArray:Array<FlxKey> = [];
+				var idArray:Array<FlxMobileInputID> = [];
 				for (strId in FUCK)
-					idArray.push(FlxKey.fromString(strId));
+					idArray.push(FlxMobileInputID.fromString(strId));
 				return luaVirtualPad.anyJustReleased(idArray);
 			}
 			else
