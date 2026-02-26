@@ -206,6 +206,7 @@ class PlayState extends MusicBeatState
 
 	public var gfSpeed:Int = 1;
 	public var health(default, set):Float = 1;
+	public var smoothHealth:Float = 1;
 	public var combo:Int = 0;
 	public var highestCombo:Int = 0;
 
@@ -283,7 +284,9 @@ class PlayState extends MusicBeatState
 	public var camPause:FlxCamera;
 	public var cameraSpeed:Float = 1;
 
+	public var commaSeparated:Bool = true;
 	public var songScore:Int = 0;
+	public var smoothScore:Float = 0;
 	public var songHits:Int = 0;
 	public var songMisses:Int = 0;
 	public var scoreTxt:FlxText;
@@ -660,8 +663,8 @@ class PlayState extends MusicBeatState
 		healthBarBG.visible = false;
 		add(healthBarBG);
 
-		healthBar = new Bar(0, FlxG.height * (!ClientPrefs.data.downScroll ? 0.89 : 0.11), 'healthBar', function() return health, 0, 2,
-			ClientPrefs.data.oldHealthBarVersion);
+		healthBar = new Bar(0, FlxG.height * (!ClientPrefs.data.downScroll ? 0.89 : 0.11), 'healthBar', function() return (ClientPrefs.data.smoothHealth ? smoothHealth : health), 0, 2, 
+		ClientPrefs.data.oldHealthBarVersion);
 		healthBar.screenCenter(X);
 		healthBar.leftToRight = ClientPrefs.data.playOpponent;
 		healthBar.scrollFactor.set();
@@ -865,6 +868,10 @@ class PlayState extends MusicBeatState
 		stagesFunc(function(stage:BaseStage) stage.createPost());
 		
 		callOnScripts('onCreatePost');
+
+		#if LUA_ALLOWED
+		callOnLuas('onModChartInit', [funkin_modchart_instance]);
+		#end
 
 		cacheCountdown();
 
@@ -1242,7 +1249,7 @@ class PlayState extends MusicBeatState
 		Paths.sound('introGo' + introSoundsSuffix);
 	}
 
-	//var funkin_modchart_instance:Manager;
+	var funkin_modchart_instance:Manager;
 	public function startCountdown()
 	{
 		if (ClientPrefs.data.pauseButton)
@@ -1265,8 +1272,8 @@ class PlayState extends MusicBeatState
 			generateStaticArrows(0);
 			generateStaticArrows(1);
 
-			//funkin_modchart_instance = new Manager();
-			//addManager(funkin_modchart_instance);
+			funkin_modchart_instance = new Manager();
+			addManager(funkin_modchart_instance);
 
 			for (i in 0...playerStrums.length)
 			{
@@ -2689,6 +2696,27 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		onUpdatePostArgs[0] = elapsed;
 		callOnScripts('onUpdatePost', onUpdatePostArgs);
+	}
+
+	// === Smooth Score ===
+			if (ClientPrefs.data.smoothScore)
+			{
+				smoothScore = CoolUtil.smoothLerp(smoothScore, songScore, 0.25);
+			}
+				else
+				{
+					smoothScore = songScore;
+				}
+
+		// === Smooth Health ===
+			if (ClientPrefs.data.smoothHealth)
+			{
+				smoothHealth = CoolUtil.smoothLerp(smoothHealth, health, 0.3);
+			}
+				else
+				{
+					smoothHealth = health;
+				}
 	}
 
 	override function draw() {
