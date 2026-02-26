@@ -2696,7 +2696,6 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		onUpdatePostArgs[0] = elapsed;
 		callOnScripts('onUpdatePost', onUpdatePostArgs);
-	}
 
 	// === Smooth Score ===
 			if (ClientPrefs.data.smoothScore)
