@@ -2700,7 +2700,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 	// === Smooth Score ===
 			if (ClientPrefs.data.smoothScore)
 			{
-				smoothScore = CoolUtil.smoothLerp(smoothScore, songScore, 0.25);
+				smoothScore = CoolUtil.smoothLerp(smoothScore, songScore, 0.3);
 			}
 				else
 				{
@@ -2710,7 +2710,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		// === Smooth Health ===
 			if (ClientPrefs.data.smoothHealth)
 			{
-				smoothHealth = CoolUtil.smoothLerp(smoothHealth, health, 0.3);
+				smoothHealth = CoolUtil.smoothLerp(smoothHealth, health, 0.35);
 			}
 				else
 				{
