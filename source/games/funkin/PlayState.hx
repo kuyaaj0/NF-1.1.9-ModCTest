@@ -2773,7 +2773,7 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled)
 		{
-			scoreTxt.text += " | " + "Score: " + songScore + " | Misses: " + songMisses + " | Accuracy: " + Math.ceil(ratingPercent * 10000) / 100 + '%'
+			scoreTxt.text += " | " + "Score: " + CoolUtil.formatNumberWithCommas(Std.int(smoothScore), commaSeparated) + " | Misses: " + songMisses + " | Accuracy: " + Math.ceil(ratingPercent * 10000) / 100 + '%'
 				+ " | ";
 
 			if (ratingName == 'N/A')
@@ -4890,6 +4890,8 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		super.stepHit();
 
+		callOnLuas('onModChartStep', [funkin_modchart_instance, curStep]);
+
 		if (curStep == lastStepHit)
 		{
 			return;
@@ -4919,6 +4921,9 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 		characterBopper(curBeat);
 
 		super.beatHit();
+
+		callOnLuas('onModChartBeat', [funkin_modchart_instance, curBeat]);
+		
 		lastBeatHit = curBeat;
 
 		setOnScripts('curBeat', curBeat);
