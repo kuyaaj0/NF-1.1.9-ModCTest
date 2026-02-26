@@ -1,0 +1,11 @@
+Smooth Settings => 平滑设置
+
+
+Smooth => 平滑选项
+
+smoothHealth => 启用平滑生命值，使生命值恢复更加平滑
+smoothScore => 启用平滑分数，使得分更加平滑
+
+Comma_Seperated => 逗号分隔功能
+
+commaSeperated => 启用逗号分隔，当您达到 1000 分到 100 万分时，您的分数将以​​逗号分隔显示
