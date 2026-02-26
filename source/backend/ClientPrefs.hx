@@ -104,6 +104,12 @@ import mobile.flixel.input.FlxMobileInputID;
 	public var camZooms:Bool = true;
 	public var scoreZoom:Bool = true;
 
+	//Smooth Setting
+	// Smooth s
+	public var smoothScore:Bool = true;
+	public var smoothHealth:Bool = true;
+	public var commaSeperated:Bool = true;
+
 	// Skin
 	public var noteSkin:String = 'Default';
 	public var noteRGB:Bool = true;
