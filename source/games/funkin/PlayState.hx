@@ -2773,8 +2773,11 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled)
 		{
-			scoreTxt.text += " | " + "Score: " + CoolUtil.commaSeparate(Std.int(smoothScore), commaSeparated) + " | Misses: " + songMisses + " | Accuracy: " + Math.ceil(ratingPercent * 10000) / 100 + '%'
-				+ " | ";
+			scoreTxt.text += " | "
+			+ "Score: " + CoolUtil.commaSeparate(Std.int(smoothScore), commaSeparated)
+			+ " | Misses: " + songMisses
+			+ " | Accuracy: " + Math.ceil(ratingPercent * 10000) / 100 + '%'
+			+ " | ";
 
 			if (ratingName == 'N/A')
 			{
