@@ -19,10 +19,10 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 	var downPozition:FlxText;
 	var leftPozition:FlxText;
 	var rightPozition:FlxText;
-	var extra1Pozition:FlxText;
+	/*var extra1Pozition:FlxText;
 	var extra2Pozition:FlxText;
 	var extra3Pozition:FlxText;
-	var extra4Pozition:FlxText;
+	var extra4Pozition:FlxText;*/
 	var inputvari:FlxText;
 	var funitext:FlxText;
 	var leftArrow:FlxSprite;
@@ -101,25 +101,25 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 					virtualPadd.buttonLeft.x = FlxG.width - 384;
 					virtualPadd.buttonLeft.y = FlxG.height - 309;
 
-					virtualPadd.buttonExtra1.x = FlxG.width * 0.5 - 86 * 3;
+					/*virtualPadd.buttonExtra1.x = FlxG.width * 0.5 - 86 * 3;
 					virtualPadd.buttonExtra1.y = FlxG.height * 0.5 - 127 * 0.5;
 					virtualPadd.buttonExtra2.x = FlxG.width * 0.5 - 44 * 3;
 					virtualPadd.buttonExtra2.y = FlxG.height * 0.5 - 127 * 0.5;
 					virtualPadd.buttonExtra3.x = FlxG.width * 0.5;
 					virtualPadd.buttonExtra3.y = FlxG.height * 0.5 - 127 * 0.5;
 					virtualPadd.buttonExtra4.x = FlxG.width * 0.5 + 44 * 3;
-					virtualPadd.buttonExtra4.y = FlxG.height * 0.5 - 127 * 0.5;
+					virtualPadd.buttonExtra4.y = FlxG.height * 0.5 - 127 * 0.5;*/
 				}
 				else
 				{
-					virtualPadd.buttonExtra1.x = FlxG.width * 0.5 - 86 * 3;
+					/*virtualPadd.buttonExtra1.x = FlxG.width * 0.5 - 86 * 3;
 					virtualPadd.buttonExtra1.y = FlxG.height * 0.5 - 127 * 0.5;
 					virtualPadd.buttonExtra2.x = FlxG.width * 0.5 - 44 * 3;
 					virtualPadd.buttonExtra2.y = FlxG.height * 0.5 - 127 * 0.5;
 					virtualPadd.buttonExtra3.x = FlxG.width * 0.5;
 					virtualPadd.buttonExtra3.y = FlxG.height * 0.5 - 127 * 0.5;
 					virtualPadd.buttonExtra4.x = FlxG.width * 0.5 + 44 * 3;
-					virtualPadd.buttonExtra4.y = FlxG.height * 0.5 - 127 * 0.5;
+					virtualPadd.buttonExtra4.y = FlxG.height * 0.5 - 127 * 0.5;*/
 				}
 			}
 		});
@@ -189,7 +189,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 		upPozition.borderSize = 2.4;
 		add(upPozition);
 
-		extra1Pozition = new FlxText(10, FlxG.height - 184, 0, '', 16);
+		/*extra1Pozition = new FlxText(10, FlxG.height - 184, 0, '', 16);
 		extra1Pozition.setFormat('VCR OSD Mono', 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		extra1Pozition.borderSize = 2.4;
 		add(extra3Pozition);
@@ -207,7 +207,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 		extra4Pozition = new FlxText(10, FlxG.height - 124, 0, '', 16);
 		extra4Pozition.setFormat('VCR OSD Mono', 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		extra4Pozition.borderSize = 2.4;
-		add(extra4Pozition);
+		add(extra4Pozition);*/
 
 		daFunny = new FlxText(0, 75, 0, 'Pad-Extras is not a control mode\nPlease selecte a valid mode such as hitbox, Pad-Left...', 35);
 		daFunny.setFormat('VCR OSD Mono', 35, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -291,7 +291,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 					else
 						moveButton(touch, bindButton);
 				}
-				else
+				/*else
 				{
 					if (virtualPadd.buttonExtra1.justPressed)
 					{
@@ -312,7 +312,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 					{
 						moveButton(touch, virtualPadd.buttonExtra4);
 					}
-				}
+				}*/
 			}
 		}
 
@@ -330,7 +330,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 			if (virtualPadd.buttonRight != null)
 				rightPozition.text = 'Button Right X:' + virtualPadd.buttonRight.x + ' Y:' + virtualPadd.buttonRight.y;
 
-			if (virtualPadd.buttonExtra1 != null)
+			/*if (virtualPadd.buttonExtra1 != null)
 				extra1Pozition.text = 'Button Extra1 X:' + virtualPadd.buttonExtra1.x + ' Y:' + virtualPadd.buttonExtra1.y;
 
 			if (virtualPadd.buttonExtra2 != null)
@@ -340,7 +340,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 				extra3Pozition.text = 'Button Extra1 X:' + virtualPadd.buttonExtra3.x + ' Y:' + virtualPadd.buttonExtra3.y;
 
 			if (virtualPadd.buttonExtra4 != null)
-				extra4Pozition.text = 'Button Extra1 X:' + virtualPadd.buttonExtra4.x + ' Y:' + virtualPadd.buttonExtra4.y;
+				extra4Pozition.text = 'Button Extra1 X:' + virtualPadd.buttonExtra4.x + ' Y:' + virtualPadd.buttonExtra4.y;*/
 		}
 	}
 
@@ -438,7 +438,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 		leftPozition.visible = daChoice == 'Pad-Custom';
 		rightPozition.visible = daChoice == 'Pad-Custom';
 
-		if (virtualPadd.visible == true)
+		/*if (virtualPadd.visible == true)
 		{
 			extra1Pozition.visible = true;
 			extra2Pozition.visible = true;
@@ -451,7 +451,7 @@ class MobileControlSelectSubState extends MusicBeatSubstate
 			extra2Pozition.visible = false;
 			extra3Pozition.visible = false;
 			extra4Pozition.visible = false;
-		}
+		}*/
 	}
 
 	function moveButton(touch:FlxTouch, button:FlxButton):Void
