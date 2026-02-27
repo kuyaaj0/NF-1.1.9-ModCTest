@@ -2,11 +2,11 @@ package backend;
 
 import flixel.util.FlxSave;
 import flixel.input.keyboard.FlxKey;
+import flixel.input.gamepad.FlxGamepadInputID;
 
 import states.TitleState;
 
 import games.funkin.backend.ExtraKeysHandler.EKNoteColor;
-import mobile.flixel.input.FlxMobileInputID;
 
 // Add a variable here and it will get automatically saved
 @:structInit class SaveVariables
@@ -297,7 +297,8 @@ class ClientPrefs
 		'debug_2' => [EIGHT],
 		'fullscreen' => [F11]
 	];
-	public static var mobileBinds:Map<String, Array<FlxMobileInputID>> = [
+	public static var defaultMobileBinds:Map<String, Array<FlxKey>> = null;
+	/*public static var mobileBinds:Map<String, Array<FlxMobileInputID>> = [
 		'note_up' => [noteUP, UP2],
 		'note_left' => [noteLEFT, LEFT2],
 		'note_down' => [noteDOWN, DOWN2],
@@ -371,16 +372,22 @@ class ClientPrefs
 		'back' => [B],
 		'pause' => [#if android NONE #else P #end],
 		'reset' => [NONE]
-	];
-	public static var defaultMobileBinds:Map<String, Array<FlxMobileInputID>> = null;
+	];*/
+	//public static var defaultMobileBinds:Map<String, Array<FlxMobileInputID>> = null;
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
+	public static var defaultButtons:Map<String, Array<FlxGamepadInputID>> = null;
 
 	public static function resetKeys(controller:Null<Bool> = null) // Null = both, False = Keyboard, True = Controller
 	{
 		if (controller != true)
 			for (key in keyBinds.keys())
 				if (defaultKeys.exists(key))
-					keyBinds.set(key, defaultKeys.get(key).copy());
+					{
+					var arr = keyBinds.get(key);
+					arr.resize(0);
+					for (i in defaultKeys.get(key))
+						arr.push(i);
+				}
 	}
 
 	public static function clearInvalidKeys(key:String)
