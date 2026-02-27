@@ -2773,8 +2773,9 @@ function musicCheck(music:FlxSound, getTime:Float, deviation:Float):Bool
 
 		if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled)
 		{
+			var displayedScore:String = commaSeparated ? CoolUtil.commaSeparate(Std.int(smoothScore)) : Std.string(Std.int(smoothScore));
 			scoreTxt.text += " | "
-			+ "Score: " + CoolUtil.commaSeparate(Std.int(smoothScore), commaSeparated)
+			+ "Score: " + displayedScore
 			+ " | Misses: " + songMisses
 			+ " | Accuracy: " + Math.ceil(ratingPercent * 10000) / 100 + '%'
 			+ " | ";
