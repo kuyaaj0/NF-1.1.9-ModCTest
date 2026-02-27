@@ -283,6 +283,19 @@ class InitState extends MusicBeatState
 			pressedEnter = true;
 		#end
 
+		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
+	
+		if (gamepad != null)
+		{
+			if (gamepad.justPressed.START)
+				pressedEnter = true;
+	
+			#if switch
+			if (gamepad.justPressed.B)
+				pressedEnter = true;
+			#end
+		}
+
 		if (pressedEnter)
 		{
 			changeState();
