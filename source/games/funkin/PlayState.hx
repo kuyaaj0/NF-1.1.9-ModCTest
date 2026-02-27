@@ -4216,6 +4216,8 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
+		if (_release.contains(true))
+
 		/*
 		if ((controls.controllerMode || strumsBlocked.contains(true)) && _release.contains(true))
 			for (i in 0..._release.length)
@@ -4855,8 +4857,8 @@ class PlayState extends MusicBeatState
 
 		stagesFunc(function(stage:BaseStage) stage.destroy());
 
-		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
-		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
+		//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
+		//FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 
 		FlxG.animationTimeScale = 1;
 		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
