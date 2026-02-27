@@ -173,7 +173,7 @@ class FlxHitbox extends FlxMobileInputManager
 		// Assign input IDs to main keys
 		for (i in 0...buttonNotes.length)
 		{
-			buttonNotes[i].IDs = [getInputID(mania, i)];
+			buttonNotes[i].IDs = [cast getInputID(mania, i)];
 		/*}
 
 		// Assign input IDs to extra buttons
