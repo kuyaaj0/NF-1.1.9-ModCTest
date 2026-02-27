@@ -42,11 +42,6 @@ class FlxButton extends FlxTypedButton<FlxText>
 	public var tag:String;
 
 	/**
-		The `FlxMobileInputID` that are assigned to this button.
-	**/
-	//public var IDs:Array<FlxMobileInputID> = [];
-
-	/**
 		A Small invisible bounds used for colision
 	**/
 	public var bounds:FlxSprite = new FlxSprite();
@@ -61,7 +56,7 @@ class FlxButton extends FlxTypedButton<FlxText>
 	 * @param   Text      The text that you want to appear on the button.
 	 * @param   OnClick   The function to call whenever the button is clicked.
 	 */
-	public function new(X:Float = 0, Y:Float = 0, ?IDs:Array<FlxKey; = null, ?Text:String, ?OnClick:Void->Void):Void
+	public function new(X:Float = 0, Y:Float = 0, ?IDs:Array<FlxKey> = null, ?Text:String, ?OnClick:Void->Void):Void
 	{
 		super(X, Y, OnClick);
 
@@ -286,7 +281,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 				}
 			}
 		}
-		
+
 		label = FlxDestroyUtil.destroy(label);
 		_spriteLabel = null;
 
@@ -444,12 +439,12 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 		for (camera in cameras)
 			for (touch in FlxG.touches.list)
 				if (checkInput(touch, touch, touch.justPressedPosition, camera))
-					overlap = true;
-
-		{
+				{
 					overlap = true;
 					return overlap;
 				}
+
+		return overlap;
 	}
 
 	function checkInput(pointer:FlxPointer, input:IFlxInput, justPressedPosition:FlxPoint, camera:FlxCamera):Bool
@@ -527,7 +522,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 				}
 			}
 		}
-		
+
 		onUp.fire(); // Order matters here, because onUp.fire() could cause a state change and destroy this object.
 	}
 
@@ -549,7 +544,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 				}
 			}
 		}
-		
+
 		onDown.fire(); // Order matters here, because onDown.fire() could cause a state change and destroy this object.
 	}
 
@@ -579,7 +574,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 				}
 			}
 		}
-		
+
 		onOut.fire(); // Order matters here, because onOut.fire() could cause a state change and destroy this object.
 	}
 
