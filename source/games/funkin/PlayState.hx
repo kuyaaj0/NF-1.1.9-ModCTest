@@ -2359,6 +2359,40 @@ class PlayState extends MusicBeatState
 
 	var pausedTimePos:Float = 0;
 
+	override function handleInput(elapsed:Float)
+	{
+		if (startedCountdown && !paused)
+        {
+            if (Conductor.songPosition < 0)
+                Conductor.songPosition += elapsed * 1000 * playbackRate;
+            else if (timing != null && (timing.isPlaying || timing.tickEnabled))
+                Conductor.songPosition = timing.getPositionMs();
+            if (checkIfDesynced && Conductor.songPosition >= 0)
+                {
+                var diff:Float = 50 * playbackRate; // 0.05秒的音乐延迟偏差
+                var timeSub:Float = Conductor.songPosition - Conductor.offset;
+
+				if (Math.abs(FlxG.sound.music.time - timeSub) > diff
+					|| musicCheck(vocals, timeSub, diff)
+					|| (splitVocals && musicCheck(opponentVocals, timeSub, diff)))
+				{
+					if (fixDesyncedStep >= 5)
+					{
+						fixDesyncedStep = 0;
+						resyncVocals(true);
+						checkIfDesynced = false;
+					}
+					else
+					{
+						fixDesyncedStep++;
+					}
+				}
+			}
+		}
+		
+		super.handleInput(elapsed);
+	}
+
 	override function update(elapsed:Float)
 	{
 		if (ClientPrefs.data.pauseButton)
@@ -2466,7 +2500,7 @@ class PlayState extends MusicBeatState
 		updateIconsScale(elapsed);
 		updateIconsPosition();
 
-        if (startedCountdown && !paused)
+        /*if (startedCountdown && !paused)
         {
             if (Conductor.songPosition < 0)
                 Conductor.songPosition += elapsed * 1000 * playbackRate;
@@ -2493,7 +2527,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 			}
-		}
+		}*/
 
 		if (startingSong)
 		{
