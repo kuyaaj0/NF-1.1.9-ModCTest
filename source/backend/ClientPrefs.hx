@@ -393,17 +393,18 @@ class ClientPrefs
 	public static function clearInvalidKeys(key:String)
 	{
 		var keyBind:Array<FlxKey> = keyBinds.get(key);
-		var mobileBind:Array<FlxMobileInputID> = mobileBinds.get(key);
+		//var mobileBind:Array<FlxMobileInputID> = mobileBinds.get(key);
 		while (keyBind != null && keyBind.contains(NONE))
 			keyBind.remove(NONE);
-		while (mobileBind != null && mobileBind.contains(NONE))
-			mobileBind.remove(NONE);
+		/*while (mobileBind != null && mobileBind.contains(NONE))
+			mobileBind.remove(NONE);*/
 	}
 
 	public static function loadDefaultKeys()
 	{
-		defaultKeys = keyBinds.copy();
-		defaultMobileBinds = mobileBinds.copy();
+		defaultKeys = [for (key => value in keyBinds) key => value.copy()];
+		/*defaultKeys = keyBinds.copy();
+		defaultMobileBinds = mobileBinds.copy();*/
 	}
 
 	public static function saveSettings()
@@ -429,7 +430,7 @@ class ClientPrefs
 		var save:FlxSave = new FlxSave();
 		save.bind('controls_v3', CoolUtil.getSavePath());
 		save.data.keyboard = keyBinds;
-		save.data.mobile = mobileBinds;
+		//save.data.mobile = mobileBinds;
 
 		save.flush();
 		FlxG.log.add("Settings saved!");
@@ -591,7 +592,13 @@ class ClientPrefs
 				var loadedControls:Map<String, Array<FlxKey>> = save.data.keyboard;
 				for (control => keys in loadedControls)
 					if (keyBinds.exists(control))
-						keyBinds.set(control, keys);
+						{
+						var arr = keyBinds.get(control);
+						arr.resize(0);
+						for (i in keys)
+							arr.push(i);
+					}
+						/*keyBinds.set(control, keys);
 			}
 			if (save.data.mobile != null)
 			{
@@ -599,7 +606,7 @@ class ClientPrefs
 				for (control => keys in loadedControls)
 					if (mobileBinds.exists(control))
 						mobileBinds.set(control, keys);
-			}
+			}*/
 
 			reloadVolumeKeys();
 		}
