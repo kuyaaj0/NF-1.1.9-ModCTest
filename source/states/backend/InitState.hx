@@ -11,6 +11,8 @@ import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.events.KeyboardEvent;
 
+import flixel.input.gamepad.FlxGamepad;
+
 import states.StoryMenuState;
 import states.backend.OutdatedState;
 import states.MainMenuState;
