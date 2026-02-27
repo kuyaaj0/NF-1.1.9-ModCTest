@@ -846,8 +846,8 @@ class PlayState extends MusicBeatState
 		startCallback();
 		RecalculateRating();
 
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
+		//FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
+		//FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 
 		// PRECACHING THINGS THAT GET USED FREQUENTLY TO AVOID LAGSPIKES
 		if (ClientPrefs.data.hitsoundVolume > 0)
@@ -3940,7 +3940,7 @@ class PlayState extends MusicBeatState
         callOnHScript('onSpawnNote', singleArg);
     }
 
-	private function onKeyPress(event:KeyboardEvent):Void
+	/*private function onKeyPress(event:KeyboardEvent):Void
 	{
 		var eventKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
@@ -3948,7 +3948,7 @@ class PlayState extends MusicBeatState
 		
 		if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
 			keyPressed(key);
-	}
+	}*/
 
 	private function onReplayPress(event:KeyboardEvent, time:Float = -999999):Void
 	{
@@ -4115,14 +4115,14 @@ class PlayState extends MusicBeatState
 		return FlxSort.byValues(FlxSort.ASCENDING, a.strumTime, b.strumTime);
 	}
 
-	private function onKeyRelease(event:KeyboardEvent):Void
+	/*private function onKeyRelease(event:KeyboardEvent):Void
 	{
 		var eventKey:FlxKey = event.keyCode;
 		var key:Int = getKeyFromEvent(keysArray, eventKey);
 
 		if (key > -1)
 			keyReleased(key);
-	}
+	}*/
 
 	public function keyReleased(key:Int)
 	{
@@ -4140,7 +4140,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	public static function getKeyFromEvent(arr:Array<String>, key:FlxKey):Int
+	/*public static function getKeyFromEvent(arr:Array<String>, key:FlxKey):Int
 	{
 		if (key != NONE)
 		{
@@ -4153,7 +4153,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		return -1;
-	}
+	}*/
 
 	// Hold notes
 	private function keysCheck():Void
@@ -4161,10 +4161,12 @@ class PlayState extends MusicBeatState
 		for (i in 0...keysArray.length)
 		{
 			var key = keysArray[i];
-			_hold[i] = controls.pressed(key) || FlxG.keys.checkStatus(key, PRESSED);
+			_hold[i] = controls.pressed(key);
 			_press[i] = controls.justPressed(key);
 			_release[i] = controls.justReleased(key);
 		}
+
+		if (_press.contains(true))
 
 		/*
 		if (controls.controllerMode && _press.contains(true))
