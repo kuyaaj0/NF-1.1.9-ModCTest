@@ -54,7 +54,7 @@ class MobileControls extends FlxTypedSpriteGroup<FlxMobileInputManager>
 				add(virtualPad);
 				virtualPad = getExtraCustomMode(virtualPad);
 			case 1:
-				virtualPad = new FlxVirtualPad(LEFT_FULL_GAME,, controlExtend);
+				virtualPad = new FlxVirtualPad(LEFT_FULL_GAME, controlExtend);
 				add(virtualPad);
 				virtualPad = getExtraCustomMode(virtualPad);
 			case 2:
