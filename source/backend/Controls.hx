@@ -1,5 +1,8 @@
 package backend;
 
+import flixel.input.gamepad.FlxGamepadButton;
+import flixel.input.gamepad.FlxGamepadInputID;
+import flixel.input.gamepad.mappings.FlxGamepadMapping;
 import flixel.input.keyboard.FlxKey;
 
 class Controls
@@ -133,7 +136,7 @@ class Controls
 
 	// Gamepad, Keyboard & Mobile stuff
 	public var keyboardBinds:Map<String, Array<FlxKey>>;
-	public var mobileBinds:Map<String, Array<FlxMobileInputID>>;
+	//public var mobileBinds:Map<String, Array<FlxMobileInputID>>;
 
 	public function justPressed(key:String)
 	{
@@ -141,9 +144,9 @@ class Controls
 		if (result)
 			controllerMode = false;
 
-		return result
-			|| mobileCJustPressed(mobileBinds[key]) == true
-			|| virtualPadJustPressed(mobileBinds[key]) == true;
+		return result;
+			/*|| mobileCJustPressed(mobileBinds[key]) == true
+			|| virtualPadJustPressed(mobileBinds[key]) == true;*/
 	}
 
 	public function pressed(key:String)
@@ -152,9 +155,9 @@ class Controls
 		if (result)
 			controllerMode = false;
 
-		return result
-			|| mobileCPressed(mobileBinds[key]) == true
-			|| virtualPadPressed(mobileBinds[key]) == true;
+		return result;
+			/*|| mobileCPressed(mobileBinds[key]) == true
+			|| virtualPadPressed(mobileBinds[key]) == true;*/
 	}
 
 	public function justReleased(key:String)
@@ -163,9 +166,9 @@ class Controls
 		if (result)
 			controllerMode = false;
 
-		return result
-			|| mobileCJustReleased(mobileBinds[key]) == true
-			|| virtualPadJustReleased(mobileBinds[key]) == true;
+		return result;
+			/*|| mobileCJustReleased(mobileBinds[key]) == true
+			|| virtualPadJustReleased(mobileBinds[key]) == true;*/
 	}
 
 	public var controllerMode:Bool = false;
@@ -175,7 +178,7 @@ class Controls
 	public var gameplayRequest(get, default):Dynamic; // for PlayState and EditorPlayState (hitbox and virtualPad)
 	public var mobileC(get, never):Bool;
 
-	private function virtualPadPressed(keys:Array<FlxMobileInputID>):Bool
+	/*private function virtualPadPressed(keys:Array<FlxMobileInputID>):Bool
 	{
 		if (keys != null && requested.virtualPad != null)
 		{
@@ -251,7 +254,7 @@ class Controls
 			}
 		}
 		return false;
-	}
+	}*/
 
 	@:noCompletion
 	private function get_requested():Dynamic
@@ -285,7 +288,7 @@ class Controls
 
 	public function new()
 	{
-		mobileBinds = ClientPrefs.mobileBinds;
+		//mobileBinds = ClientPrefs.mobileBinds;
 		keyboardBinds = ClientPrefs.keyBinds;
 	}
 }
