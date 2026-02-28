@@ -663,8 +663,8 @@ class PlayState extends MusicBeatState
 		healthBarBG.visible = false;
 		add(healthBarBG);
 
-		healthBar = new Bar(0, FlxG.height * (!ClientPrefs.data.downScroll ? 0.89 : 0.11), 'healthBar', function() return (ClientPrefs.data.smoothHealth ? smoothHealth : health), 0, 2, 
-		ClientPrefs.data.oldHealthBarVersion);
+		healthBar = new Bar(0, FlxG.height * (!ClientPrefs.data.downScroll ? 0.89 : 0.11), 'healthBar', function() return health, 0, 2,
+			ClientPrefs.data.oldHealthBarVersion);
 		healthBar.screenCenter(X);
 		healthBar.leftToRight = ClientPrefs.data.playOpponent;
 		healthBar.scrollFactor.set();
@@ -846,9 +846,6 @@ class PlayState extends MusicBeatState
 		startCallback();
 		RecalculateRating();
 
-		//FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
-		//FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
-
 		// PRECACHING THINGS THAT GET USED FREQUENTLY TO AVOID LAGSPIKES
 		if (ClientPrefs.data.hitsoundVolume > 0)
 			Paths.sound('hitsound');
@@ -868,10 +865,6 @@ class PlayState extends MusicBeatState
 		stagesFunc(function(stage:BaseStage) stage.createPost());
 		
 		callOnScripts('onCreatePost');
-
-		#if LUA_ALLOWED
-		callOnLuas('onModChartInit', [funkin_modchart_instance]);
-		#end
 
 		cacheCountdown();
 
@@ -1249,7 +1242,7 @@ class PlayState extends MusicBeatState
 		Paths.sound('introGo' + introSoundsSuffix);
 	}
 
-	var funkin_modchart_instance:Manager;
+	//var funkin_modchart_instance:Manager;
 	public function startCountdown()
 	{
 		if (ClientPrefs.data.pauseButton)
@@ -2500,35 +2493,6 @@ class PlayState extends MusicBeatState
 		updateIconsScale(elapsed);
 		updateIconsPosition();
 
-        /*if (startedCountdown && !paused)
-        {
-            if (Conductor.songPosition < 0)
-                Conductor.songPosition += elapsed * 1000 * playbackRate;
-            else if (timing != null && (timing.isPlaying || timing.tickEnabled))
-                Conductor.songPosition = timing.getPositionMs();
-            if (checkIfDesynced && Conductor.songPosition >= 0)
-                {
-                var diff:Float = 50 * playbackRate; // 0.05秒的音乐延迟偏差
-                var timeSub:Float = Conductor.songPosition - Conductor.offset;
-
-				if (Math.abs(FlxG.sound.music.time - timeSub) > diff
-					|| musicCheck(vocals, timeSub, diff)
-					|| (splitVocals && musicCheck(opponentVocals, timeSub, diff)))
-				{
-					if (fixDesyncedStep >= 5)
-					{
-						fixDesyncedStep = 0;
-						resyncVocals(true);
-						checkIfDesynced = false;
-					}
-					else
-					{
-						fixDesyncedStep++;
-					}
-				}
-			}
-		}*/
-
 		if (startingSong)
 		{
             if (startedCountdown && Conductor.songPosition >= 0)
@@ -2730,8 +2694,8 @@ class PlayState extends MusicBeatState
 
 		onUpdatePostArgs[0] = elapsed;
 		callOnScripts('onUpdatePost', onUpdatePostArgs);
-
-	// === Smooth Score ===
+		
+		// === Smooth Score ===
 			if (ClientPrefs.data.smoothScore)
 			{
 				smoothScore = CoolUtil.smoothLerp(smoothScore, songScore, 0.3);
@@ -3940,25 +3904,6 @@ class PlayState extends MusicBeatState
         callOnHScript('onSpawnNote', singleArg);
     }
 
-	/*private function onKeyPress(event:KeyboardEvent):Void
-	{
-		var eventKey = event.keyCode;
-		var key:Int = getKeyFromEvent(keysArray, eventKey);
-
-		
-		if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
-			keyPressed(key);
-	}*/
-
-	private function onReplayPress(event:KeyboardEvent, time:Float = -999999):Void
-	{
-		var eventKey = event.keyCode;
-		var key:Int = getKeyFromEvent(keysArray, eventKey);
-
-		if (FlxG.keys.checkStatus(eventKey, JUST_PRESSED))
-			keyPressed(key, time);
-	}
-
 	private function keyPressed(key:Int, ?time:Float = -999999)
 	{
 		if (ClientPrefs.data.playOpponent ? cpuControlled_opponent : cpuControlled || paused || key < 0)
@@ -4115,15 +4060,6 @@ class PlayState extends MusicBeatState
 		return FlxSort.byValues(FlxSort.ASCENDING, a.strumTime, b.strumTime);
 	}
 
-	/*private function onKeyRelease(event:KeyboardEvent):Void
-	{
-		var eventKey:FlxKey = event.keyCode;
-		var key:Int = getKeyFromEvent(keysArray, eventKey);
-
-		if (key > -1)
-			keyReleased(key);
-	}*/
-
 	public function keyReleased(key:Int)
 	{
 		if (ClientPrefs.data.playOpponent ? !cpuControlled_opponent : !cpuControlled && startedCountdown && !paused)
@@ -4140,21 +4076,6 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	/*public static function getKeyFromEvent(arr:Array<String>, key:FlxKey):Int
-	{
-		if (key != NONE)
-		{
-			for (i in 0...arr.length)
-			{
-				var note:Array<FlxKey> = Controls.instance.keyboardBinds[arr[i]];
-				for (noteKey in note)
-					if (key == noteKey)
-						return i;
-			}
-		}
-		return -1;
-	}*/
-
 	// Hold notes
 	private function keysCheck():Void
 	{
@@ -4167,13 +4088,9 @@ class PlayState extends MusicBeatState
 		}
 
 		if (_press.contains(true))
-
-		/*
-		if (controls.controllerMode && _press.contains(true))
 			for (i in 0..._press.length)
 				if (_press[i] && strumsBlocked[i] != true)
 					keyPressed(i, Conductor.songPosition);
-		*/
 
 		var char:Character = ClientPrefs.data.playOpponent ? dad : boyfriend;
 		if (startedCountdown && !char.stunned && generatedMusic)
@@ -4217,13 +4134,9 @@ class PlayState extends MusicBeatState
 		}
 
 		if (_release.contains(true))
-
-		/*
-		if ((controls.controllerMode || strumsBlocked.contains(true)) && _release.contains(true))
 			for (i in 0..._release.length)
 				if (_release[i] || strumsBlocked[i] == true)
 					keyReleased(i);
-		*/
 	}
 
 	public function noteMiss(daNote:Note, ?index:Int = -1):Void
@@ -4856,9 +4769,6 @@ class PlayState extends MusicBeatState
 		#end
 
 		stagesFunc(function(stage:BaseStage) stage.destroy());
-
-		//FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
-		//FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 
 		FlxG.animationTimeScale = 1;
 		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
