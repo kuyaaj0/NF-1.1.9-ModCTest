@@ -19,8 +19,6 @@ class FlxHitbox extends FlxMobileInputManager
 	public var buttonNotes:Array<FlxButton> = [];
 	public var buttonExtra:Array<FlxButton> = [];
 
-	var storedButtonsIDs:Map<String, Array<FlxKey>> = new Map<String, Array<FlxKey>>();
-
 	/**
 	 * Create the zone.
 	 */
@@ -41,14 +39,6 @@ class FlxHitbox extends FlxMobileInputManager
 		var scale:Float = Math.min(stage.stageWidth / 1280, stage.stageHeight / 720);
 		var newWidth:Int = Std.int(stage.stageWidth / scale);
 		var newHeight:Int = Std.int(stage.stageHeight / scale);
-
-		for (button in Reflect.fields(this))
-		{
-			if (Std.isOfType(Reflect.field(this, button), FlxButton))
-			{
-				storedButtonsIDs.set(button, Reflect.getProperty(Reflect.field(this, button), 'IDs'));
-			}
-		}
 
 		if (ClientPrefs.data.extraKey == 0)
 		{
@@ -101,15 +91,6 @@ class FlxHitbox extends FlxMobileInputManager
 		for (i in 0...buttonNotes.length)
 		{
 			buttonNotes[i].IDs = getInputID(mania, i);
-		}
-
-		// Assign input IDs to extra buttons
-		for (button in Reflect.fields(this))
-		{
-			if (Std.isOfType(Reflect.field(this, button), FlxButton))
-			{
-				Reflect.setProperty(Reflect.getProperty(this, button), 'IDs', storedButtonsIDs.get(button));
-			}
 		}
 
 		scrollFactor.set();
