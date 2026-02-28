@@ -50,20 +50,20 @@ class MobileControls extends FlxTypedSpriteGroup<FlxMobileInputManager>
 		switch (virtualPadMode)
 		{
 			case 0:
-				virtualPad = new FlxVirtualPad(RIGHT_FULL, controlExtend);
+				virtualPad = new FlxVirtualPad(RIGHT_FULL_GAME, controlExtend);
 				add(virtualPad);
 				virtualPad = getExtraCustomMode(virtualPad);
 			case 1:
-				virtualPad = new FlxVirtualPad(LEFT_FULL, controlExtend);
+				virtualPad = new FlxVirtualPad(LEFT_FULL_GAME, controlExtend);
 				add(virtualPad);
 				virtualPad = getExtraCustomMode(virtualPad);
 			case 2:
-				virtualPad = new FlxVirtualPad(RIGHT_FULL, controlExtend);
+				virtualPad = new FlxVirtualPad(RIGHT_FULL_GAME, controlExtend);
 				virtualPad = getCustomMode(virtualPad);
 				virtualPad = getExtraCustomMode(virtualPad);
 				add(virtualPad);
 			case 3:
-				virtualPad = new FlxVirtualPad(BOTH, controlExtend);
+				virtualPad = new FlxVirtualPad(BOTH_GAME, controlExtend);
 				add(virtualPad);
 				virtualPad = getExtraCustomMode(virtualPad);
 			case 4:
@@ -183,18 +183,6 @@ class MobileControls extends FlxTypedSpriteGroup<FlxMobileInputManager>
 		current.buttonDown.color = buttonsColors[1];
 		current.buttonUp.color = buttonsColors[2];
 		current.buttonRight.color = buttonsColors[3];
-
-		/*if(mode == 4){
-				hitbox.buttonLeft.color = buttonsColors[0];
-				hitbox.buttonDown.color = buttonsColors[1];
-				hitbox.buttonUp.color = buttonsColors[2];
-				hitbox.buttonRight.color = buttonsColors[3];
-			} else {
-				virtualPad.buttonLeft.color = buttonsColors[0];
-				virtualPad.buttonDown.color = buttonsColors[1];
-				virtualPad.buttonUp.color = buttonsColors[2];
-				virtualPad.buttonRight.color = buttonsColors[3];
-		}*/
 	}
 }
 
