@@ -866,6 +866,10 @@ class PlayState extends MusicBeatState
 		
 		callOnScripts('onCreatePost');
 
+		#if LUA_ALLOWED
+		callOnLuas('onModChartInit', [funkin_modchart_instance]);
+		#end
+
 		cacheCountdown();
 
 		super.create();
@@ -1242,7 +1246,7 @@ class PlayState extends MusicBeatState
 		Paths.sound('introGo' + introSoundsSuffix);
 	}
 
-	//var funkin_modchart_instance:Manager;
+	var funkin_modchart_instance:Manager;
 	public function startCountdown()
 	{
 		if (ClientPrefs.data.pauseButton)
