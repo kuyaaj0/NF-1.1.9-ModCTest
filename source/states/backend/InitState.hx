@@ -282,7 +282,7 @@ class InitState extends MusicBeatState
 		if (FlxG.android.justReleased.BACK)
 			pressedEnter = true;
 		#end
-
+	
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 	
 		if (gamepad != null)
@@ -295,7 +295,7 @@ class InitState extends MusicBeatState
 				pressedEnter = true;
 			#end
 		}
-
+		
 		if (pressedEnter)
 		{
 			changeState();
@@ -396,4 +396,3 @@ class InitState extends MusicBeatState
 		}
 	}
 }
-
