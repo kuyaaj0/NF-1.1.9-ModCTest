@@ -421,7 +421,7 @@ class ModsMenuState extends MusicBeatState
 				FlxG.mouse.visible = true;
 		}
 
-        if (controls.controllerMode != _lastControllerMode)
+		if (controls.controllerMode != _lastControllerMode)
 		{
 			if (controls.controllerMode)
 				FlxG.mouse.visible = false;
@@ -433,16 +433,16 @@ class ModsMenuState extends MusicBeatState
 
 		if (modsList.all.length > 0)
 		{
-
-			var lastMode = hoveringOnMods;
-			if (modsList.all.length > 1)
-			{
-				if (controls.controllerMode && holdingMod)
+			if (controls.controllerMode && holdingMod)
 			{
 				holdingMod = false;
 				holdingElapsed = 0;
 				updateItemPositions();
 			}
+
+			var lastMode = hoveringOnMods;
+			if (modsList.all.length > 1)
+			{
 				if (FlxG.mouse.justPressed)
 				{
 					for (i in centerMod - 2...centerMod + 3)
@@ -1162,4 +1162,3 @@ class MenuButton extends FlxSpriteGroup
 		spr.y = bg.height / 2 - spr.height / 2;
 	}
 }
-
