@@ -606,3 +606,4 @@ class HScript implements ISharedScript {
 	}
 }
 #end
+	
