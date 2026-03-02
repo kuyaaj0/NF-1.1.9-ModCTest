@@ -1,4 +1,4 @@
-package games.funkin.backend;
+﻿package games.funkin.backend;
 
 import flixel.input.keyboard.FlxKey;
 import flixel.FlxBasic;
@@ -82,7 +82,6 @@ class Replay extends FlxBasic
 	override function handleInput(elapsed:Float) 
 	{
 		super.handleInput(elapsed);
-		
 		if (isRecording) return;
 
 		while (lastFrameCount < frameData.length && frameData[lastFrameCount].time <= Conductor.songPosition) {
