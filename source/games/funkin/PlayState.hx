@@ -4708,7 +4708,7 @@ class PlayState extends MusicBeatState
 				note.kill();
 				notes.remove(note, true);
 				if (note.isSustainNote) sustainLayer.remove(note, true); else tapLayer.remove(note, true);
-				note.destroy();
+				note = FlxDestroyUtil.destroy(note);
 			}
 			idx++;
 		}
@@ -4834,6 +4834,7 @@ class PlayState extends MusicBeatState
 			FlxDestroyUtil.destroy(noteGroup);
 			noteGroup = null;
 		}
+		super.destroy();
 	}
 
 	var checkIfDesynced:Bool = false;
