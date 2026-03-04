@@ -4783,7 +4783,7 @@ class PlayState extends MusicBeatState
 		FlxG.game._filters = [];
 		camGame.filters = camHUD.filters = camOther.filters = [];
 
-		if (tempNotes != null && tempNotes.length > 0)
+		/*if (tempNotes != null && tempNotes.length > 0)
 		{
 			for (note in tempNotes) if (note != null) note.destroy();
 			tempNotes = [];
@@ -4833,7 +4833,7 @@ class PlayState extends MusicBeatState
 		{
 			FlxDestroyUtil.destroy(noteGroup);
 			noteGroup = null;
-		}
+		}*/
 		super.destroy();
 	}
 
