@@ -1,4 +1,9 @@
 name: MobileBuild
+
+permissions:
+  actions: write
+  contents: write
+
 on:
   workflow_call:
     inputs:
@@ -15,19 +20,16 @@ on:
       - 'example_mods/'
       - 'hmm.json'
       - 'README.md'
+
   pull_request:
     branches: [ main ]
-    
+
   workflow_dispatch:
     inputs:
       dependencies_to_update:
         description: '输入 "all" 更新所有haxelib, 也可以输入单个或多个haxelib单独更新他们(e.g. "lime openfl flixel"),不输入即不给haxelib做任何更新'
         required: false
         default: ''
-
-        permissions:
-        contents: write
-        actions: write
 
 jobs:
   installHaxelib:
