@@ -338,9 +338,9 @@ class Bar extends FlxSpriteGroup
 	{
 		active = false;
 		barOffset.put();
-		bg = FlxDestroyUtil.destroy(bg);
-		leftBar = FlxDestroyUtil.destroy(leftBar);
-		rightBar = FlxDestroyUtil.destroy(rightBar);
+		bg = null;
+		leftBar = null;
+		rightBar = null;
 		super.destroy();
 	}
 }
